@@ -6,6 +6,7 @@ export default (function() {
 
     Search.prototype.aStar = function(cities, startCity, destCity, heuristic) {
 
+
     };
 
 
