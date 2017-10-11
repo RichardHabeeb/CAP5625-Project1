@@ -23,11 +23,17 @@ export default (function() {
                     break
                 }
 
-                var l = line.split(/ +/);   // split on any number of spaces.
-                var name = l.pop();
-                var num_adjacent = l.pop();
+                var l = line.split(/[\s]+/);   // split on any number of spaces.
+                var adjacents = l.map(function(cv) {
+                    return cv.trim();
+                });
+                if(adjacents[adjacents.length-1]=="") adjacents.pop();
+                var name = adjacents.shift();
+                var num_adjacent = adjacents.shift();
 
-                cities[name] = new City(name, num_adjacent, l);
+
+
+                cities[name] = new City(name, adjacents);
                 // cities.set(name, new City(name, num_adjacent, l));
             }
 
@@ -35,7 +41,7 @@ export default (function() {
                 callback(cities);
             }
         };
-        
+
         reader.readAsText(this.file);
     };
 

@@ -1,5 +1,6 @@
 import City from './City.js';
 import Heuristic from './Heuristic.js';
+import ShortestDistanceHeuristic from './ShortestDistanceHeuristic.js';
 import Parser from './Parser.js';
 import Search from './Search.js';
 
@@ -13,9 +14,9 @@ function handleFiles() {
     console.log(connectionsFile.name);
     (new Parser(connectionsFile)).getCities(function(cities) {
         console.log("File read:", cities);
-        for (var c in cities)
-        {
-            console.log(c);
-        }
+        var searcher = new Search(cities, new ShortestDistanceHeuristic());
+        searcher.shortestPath("D4", "G4");
     });
+
+
 };
