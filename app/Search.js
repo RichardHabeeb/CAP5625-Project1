@@ -16,6 +16,7 @@ export default (function() {
 
             if(current.name == destCity) {
                 //TODO print path.
+                this.tracePath(startCity, current);
                 console.log("yay");
                 break;
             }
@@ -42,6 +43,15 @@ export default (function() {
                 }
             }
         }
+    };
+
+    Search.prototype.tracePath = function(startCityName, destCity) {
+        if(typeof(destCity) === "undefined" || destCity === null) return;
+
+        console.log(destCity.name);
+        
+        if(destCity.name === startCityName) return;
+        this.tracePath(startCityName, destCity.parent);
     };
 
 

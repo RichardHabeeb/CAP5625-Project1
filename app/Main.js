@@ -14,8 +14,8 @@ function handleFiles() {
     console.log(connectionsFile.name);
     (new Parser(connectionsFile)).getCities(function(cities) {
         console.log("File read:", cities);
-        var searcher = new Search(cities, new ShortestDistanceHeuristic());
-        searcher.shortestPath("D4", "G4");
+        var searcher = new Search(cities, new Heuristic());
+        searcher.shortestPath("D4", "G5");
     });
 
 
