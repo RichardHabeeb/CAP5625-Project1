@@ -8,10 +8,10 @@ export default (function() {
 
     Parser.prototype.file = null;
 
-    Parser.prototype.getCities = function() {
+    Parser.prototype.getCities = function(callback) {
         var reader = new FileReader();
         // var cities = new Map();
-        var cities = new Object();
+        var cities = {};
 
         reader.onload = function(){
             var lines = this.result.split('\n');
@@ -30,10 +30,13 @@ export default (function() {
                 cities[name] = new City(name, num_adjacent, l);
                 // cities.set(name, new City(name, num_adjacent, l));
             }
-        };
-        reader.readAsText(this.file);
 
-        return cities;
+            if(typeof callback === "function") {
+                callback(cities);
+            }
+        };
+        
+        reader.readAsText(this.file);
     };
 
     return Parser;

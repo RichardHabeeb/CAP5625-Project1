@@ -11,6 +11,11 @@ function handleFiles() {
     const connectionsFile = fileList[0];
 
     console.log(connectionsFile.name);
-    var cities = new Parser(connectionsFile).getCities();
-    console.log(cities);
-}
+    (new Parser(connectionsFile)).getCities(function(cities) {
+        console.log("File read:", cities);
+        for (var c in cities)
+        {
+            console.log(c);
+        }
+    });
+};
