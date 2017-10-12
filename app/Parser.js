@@ -10,7 +10,6 @@ export default (function() {
 
     Parser.prototype.getCities = function(callback) {
         var reader = new FileReader();
-        // var cities = new Map();
         var cities = {};
 
         reader.onload = function(){
@@ -31,10 +30,40 @@ export default (function() {
                 var name = adjacents.shift();
                 var num_adjacent = adjacents.shift();
 
-
-
                 cities[name] = new City(name, adjacents);
-                // cities.set(name, new City(name, num_adjacent, l));
+            }
+
+            if(typeof callback === "function") {
+                callback(cities);
+            }
+        };
+
+        reader.readAsText(this.file);
+    };
+
+    Parser.prototype.addLocations = function(cities, callback) {
+        var reader = new FileReader();
+
+        reader.onload = function(){
+            var lines = this.result.split('\n');
+
+            for(let lineNum = 0; lineNum < lines.length; lineNum++){
+                var line = lines[lineNum];
+
+                if (line === "END"){
+                    break
+                }
+
+                var l = line.split(/[\s]+/);   // split on any number of spaces.
+                var locs = l.map(function(cv) {
+                    return cv.trim();
+                });
+                if(locs[locs.length-1]=="") locs.pop();
+                var name = locs.shift();
+                var x = locs.shift();
+                var y = locs.shift();
+
+                cities[name].set_coords(x, y);
             }
 
             if(typeof callback === "function") {
