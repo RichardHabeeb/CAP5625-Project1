@@ -1,20 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>CAP5625 - A * Algorithm</title>
+    <meta charset="UTF-8">
+    <title>CAP5625 - A * Algorithm</title>
 
 </head>
 <body>
 
 <div>
-  Select Connections File:
-  <input type="file" id="connections">
+    Select Connections File:
+    <input type="file" id="connections">
 </div>
 
 <div id="locationSelect" style="display: none">
-  Select Locations File:
-  <input type="file" id="locations">
+    Select Locations File:
+    <input type="file" id="locations">
+</div>
+
+<div id="start" style="display: none">
+
+    <p> Select Start City: </p>
+    <select name="startCity" id="startCity">
+    </select>
+
+    <p> Select End City: </p>
+
+    <select name="endCity" id="endCity">
+    </select>
+
+    <p>
+        Select cities to exclude (Hold down ctrl (windows) / command (mac) to multi-select)
+    </p>
+    <select multiple name="exclude" id="exclude">
+    </select>
+
+    <p> Select Heuristic </p>
+    <select name="heuristic">
+        <option value="straight"> Straight Line Distance </option>
+        <option value="links"> Fewest Links </option>
+    </select>
+
+    <button onclick="astar();"> Search </button>
 </div>
 
 <div id = "output">

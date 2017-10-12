@@ -33,10 +33,43 @@ function handleLocationsFile() {
     (new Parser(locationsFile)).addLocations(cities, function(locations) {
         console.log("Locations read:", locations);
         console.log(cities);
-        // var searcher = new Search(cities, new Heuristic());
-        var searcher = new Search(cities, new ShortestDistanceHeuristic());
-        searcher.shortestPath("D4", "G5");
+        document.getElementById("start").style.display = "block";
+
+        const elementList = ["startCity", "endCity", "exclude"];
+
+        for (var i = 0; i < elementList.length; i++){
+            var elem = document.getElementById(elementList[i]);
+
+            for (var k in cities) {
+                var option = document.createElement("option");
+                option.textContent = k;
+                option.value = k;
+                elem.appendChild(option);
+            }
+        }
     });
 }
 
+function astar() {
+    console.log("Form submitted.");
+
+    const startCity = document.getElementById("startCity").value;
+    const endCity = document.getElementById("endCity").value;
+    const exclude = document.getElementById("exclude").value;
+    const heuristic = document.getElementById("heuristic").value;
+
+    console.log(startCity);
+
+    /*for (var i = 0; i < exclude.length; i++){
+        cities.delete(exclude[i])
+    }*/
+
+   /* var searcher;
+    if (heuristic === "shortest"){
+        searcher = new Search(cities, new ShortestDistanceHeuristic());
+    } else {
+        searcher = new Search(cities, new Heuristic());
+    }
+    searcher.shortestPath(startCity, endCity);*/
+}
 
