@@ -12,6 +12,7 @@ export default (function() {
     City.prototype.h = Number.MAX_VALUE;
     City.prototype.d = Number.MAX_VALUE;
     City.prototype.coords = new Point(0, 0);
+    City.prototype.isExcluded = false;
 
     City.prototype.setCoords = function (x, y) {
         this.coords = new Point(parseInt(x), parseInt(y))

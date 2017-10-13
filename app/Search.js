@@ -26,7 +26,7 @@ export default (function() {
                 var next = this.cities[current.adjacent[i]];
                 if(typeof(next) === "undefined")
                     console.log(current);
-                if(next.name in done) continue;
+                if(next.name in done || next.isExcluded) continue;
 
                 var newDist = current.d + this.heuristic.distBetween(current, next);
                 if(newDist >= next.d) continue;

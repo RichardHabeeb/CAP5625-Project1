@@ -74,6 +74,12 @@ $(document).ready(function() {
             h = new ShortestDistanceHeuristic();
         }
 
+        var excludes = $("#exclude").val();
+
+        for (var i = 0; i < excludes.length; i++) {
+            cities[excludes[i]].isExcluded = true;
+        }
+
         $.each(cities, function(name, c){
             c.d = City.prototype.d;
             c.h = City.prototype.h;
@@ -102,9 +108,5 @@ $(document).ready(function() {
       // re-initialize (update)
       $(this).material_select();
     });
-
-
-
-
 
 });
