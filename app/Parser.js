@@ -1,4 +1,5 @@
 import City from './City.js';
+import Point from './Point.js'
 
 export default (function() {
 
@@ -63,7 +64,7 @@ export default (function() {
                 var x = locs.shift();
                 var y = locs.shift();
 
-                cities[name].set_coords(x, y);
+                cities[name].setCoords(x, y);
             }
 
             if(typeof callback === "function") {
