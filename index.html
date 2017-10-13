@@ -1,53 +1,112 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html class="no-js" lang="">
+
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>CAP5625 - A * Algorithm</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
+    <!-- Place favicon.ico in the root directory -->
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/materialize.min.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
+
 <body>
+    <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <![endif]-->
 
-<div>
-    Select Connections File:
-    <input type="file" id="connections">
-</div>
+    <!-- Add your site or application content here -->
+    <div class="row">
+        <div class="col s12">
+            <h1>Pathfinding Through Cities.</h1>
+        </div>
+    </div>
 
-<div id="locationSelect" style="display: none">
-    Select Locations File:
-    <input type="file" id="locations">
-</div>
+    <div class="row">
+        <form class="col s12">
 
-<div id="start" style="display: none">
+            <div class="row">
+                <div class="file-field input-field col s6">
+                    <div class="btn">
+                        <span>Connections File</span>
+                        <input type="file" id="connections">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+                <div class="file-field input-field col s6 " >
+                    <div class="btn disabled" id="locationsBtn">
+                        <span>Locations File</span>
+                        <input type="file" id="locations">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate disabled" type="text">
+                    </div>
+                </div>
+            </div>
 
-    <p> Select Start City: </p>
-    <select name="startCity" id="startCity">
-    </select>
+            <div class="row">
+                <div class="input-field col s6">
+                    <select disabled  id="startCity" class="validate">
+                        <option value="" disabled selected>Select Start City:</option>
+                    </select>
+                    <label>Start</label>
+                </div>
+                <div class="input-field col s6">
+                    <select disabled id="endCity" class="validate">
+                        <option value="" disabled selected>Select End City:</option>
+                    </select>
+                    <label>End</label>
+                </div>
+            </div>
 
-    <p> Select End City: </p>
+            <div class="row">
+                <div class="input-field col s6">
+                    <select disabled multiple id="exclude" class="validate">
+                        <option value="" disabled>Select Excluded Cities:</option>
+                    </select>
+                    <label>Exclude</label>
+                </div>
+                <div class="input-field col s6">
+                    <select id="heuristic" class="validate">
+                        <option value="straight">Straight Line Distance</option>
+                        <option value="links">Fewest Links</option>
+                    </select>
+                    <label>Heuristic</label>
+                </div>
+            </div>
 
-    <select name="endCity" id="endCity">
-    </select>
+            <div class="row">
+                <div class="col s12">
+                    <div class="btn" id="search">
+                        <span>Search</span>
+                    </div>
+                </div>
+            </div>
 
-    <p>
-        Select cities to exclude (Hold down ctrl (windows) / command (mac) to multi-select)
-    </p>
-    <select multiple name="exclude" id="exclude">
-    </select>
+            <div class="row">
+                <div class="col s12" >
+                    <div id="output">
+                    </div>
+                </div>
+            </div>
 
-    <p> Select Heuristic </p>
-    <select name="heuristic">
-        <option value="straight"> Straight Line Distance </option>
-        <option value="links"> Fewest Links </option>
-    </select>
-
-    <button onclick="astar();"> Search </button>
-</div>
-
-<div id = "output">
-
-</div>
+        </form>
+    </div>
 
 
-<script src="dest/index.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="lib/materialize.min.js"></script>
+    <script src="lib/snap.svg-min.js"></script>
+    <script src="dest/index.js"></script>
 </body>
+
 </html>

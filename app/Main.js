@@ -4,72 +4,67 @@ import ShortestDistanceHeuristic from './ShortestDistanceHeuristic.js';
 import Parser from './Parser.js';
 import Search from './Search.js';
 
-const connectionsElement = document.getElementById("connections");
-connectionsElement.addEventListener("change", handleConnectionsFile, false);
 
-const locationsElement = document.getElementById("locations");
-locationsElement.addEventListener("change", handleLocationsFile, false);
+$(document).ready(function() {
+    $('select').material_select();
 
-var cities = null;
+    var cities = null;
 
-function handleConnectionsFile() {
-    const fileList = this.files;
-    const connectionsFile = fileList[0];
+    $("#connections").on("change", function() {
+        const fileList = this.files;
+        const connectionsFile = fileList[0];
 
-    console.log("Connections file: " + connectionsFile.name);
-    (new Parser(connectionsFile)).getCities(function(c) {
-        console.log("File read:", c);
-        document.getElementById("locationSelect").style.display = "block";
+        console.log("Connections file: " + connectionsFile.name);
+        (new Parser(connectionsFile)).getCities(function(c) {
+            console.log("File read:", c);
 
-        cities = c;
+            $("#locationsBtn").removeClass("disabled");
+            cities = c;
+        });
     });
-}
 
-function handleLocationsFile() {
-    const fileList = this.files;
-    const locationsFile = fileList[0];
+    $("#locations").on("change", function() {
+        const fileList = this.files;
+        const locationsFile = fileList[0];
 
-    console.log("Locations file: " + locationsFile.name);
-    (new Parser(locationsFile)).addLocations(cities, function(locations) {
-        console.log("Locations read:", locations);
-        console.log(cities);
-        document.getElementById("start").style.display = "block";
+        console.log("Locations file: " + locationsFile.name);
+        (new Parser(locationsFile)).addLocations(cities, function(locations) {
+            console.log("Locations read:", locations);
+            console.log(cities);
 
-        const elementList = ["startCity", "endCity", "exclude"];
+            $("#startCity").removeAttr("disabled");
+            $("#endCity").removeAttr("disabled");
+            $("#exclude").removeAttr("disabled");
 
-        for (var i = 0; i < elementList.length; i++){
-            var elem = document.getElementById(elementList[i]);
+            $.each(cities, function(name, c)
+            {
+                $("#startCity").append('<option value=' + name + '>' + name + '</option>');
+                $("#endCity").append('<option value=' + name + '>' + name + '</option>');
+                $("#exclude").append('<option value=' + name + '>' + name + '</option>');
+                $("#startCity").trigger('contentChanged');
+                $("#endCity").trigger('contentChanged');
+                $("#exclude").trigger('contentChanged');
+            });
 
-            for (var k in cities) {
-                var option = document.createElement("option");
-                option.textContent = k;
-                option.value = k;
-                elem.appendChild(option);
-            }
+        });
+    });
+
+    $("#search").on("click", function() {
+        var h = new Heuristic();
+        if($("#heuristic").find(":selected").text() == "straight") {
+            h = new ShortestDistanceHeuristic();
         }
+
+        var s = new Search(cities, h);
+
+        s.shortestPath(
+            $("#startCity").find(":selected").text(),
+            $("#endCity").find(":selected").text());
     });
-}
 
-function astar() {
-    console.log("Form submitted.");
+    $('select').on('contentChanged', function() {
+      // re-initialize (update)
+      $(this).material_select();
+    });
 
-    const startCity = document.getElementById("startCity").value;
-    const endCity = document.getElementById("endCity").value;
-    const exclude = document.getElementById("exclude").value;
-    const heuristic = document.getElementById("heuristic").value;
-
-    console.log(startCity);
-
-    /*for (var i = 0; i < exclude.length; i++){
-        cities.delete(exclude[i])
-    }*/
-
-   /* var searcher;
-    if (heuristic === "shortest"){
-        searcher = new Search(cities, new ShortestDistanceHeuristic());
-    } else {
-        searcher = new Search(cities, new Heuristic());
-    }
-    searcher.shortestPath(startCity, endCity);*/
-}
-
+});
