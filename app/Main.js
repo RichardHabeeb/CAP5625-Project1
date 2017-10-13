@@ -55,6 +55,11 @@ $(document).ready(function() {
             h = new ShortestDistanceHeuristic();
         }
 
+        $.each(cities, function(name, c){
+            c.d = City.prototype.d;
+            c.h = City.prototype.h;
+        });
+
         var s = new Search(cities, h);
 
         s.shortestPath(
