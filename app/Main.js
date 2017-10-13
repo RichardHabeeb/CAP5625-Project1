@@ -14,30 +14,31 @@ $(document).ready(function() {
     s.clear();
 
     function DrawCity(c) {
-        var cir = s.circle(c.coords.x, c.coords.y, 15);
-        cir.attr({
-            fill: "#4caf50",
-            strokeWidth: 0, // CamelCase...
-            "fill-opacity": 0.5, // or dash-separated names
-        });
+        if (c.isExcluded === false) {
+            var cir = s.circle(c.coords.x, c.coords.y, 15);
+            cir.attr({
+                fill: "#4caf50",
+                strokeWidth: 0, // CamelCase...
+                "fill-opacity": 0.5, // or dash-separated names
+            });
+            var text = s.text(c.coords.x, c.coords.y + 5, c.name);
+            text.attr({
+                "text-anchor": "middle",
+                "fill": "#1b5e20"
+            });
 
-        var text = s.text(c.coords.x, c.coords.y + 5, c.name);
-        text.attr({
-            "text-anchor": "middle",
-            "fill": "#1b5e20"
-        });
-
-        $.each(c.adjacent, function (i) {
-                var adj = cities[c.adjacent[i]];
-                var line = s.line(c.coords.x, c.coords.y, adj.coords.x, adj.coords.y);
-                line.attr({
-                    stroke: "#beaed4",
-                    strokeWidth: 1
-                });
-
-            }
-        );
-
+            $.each(c.adjacent, function (i) {
+                    var adj = cities[c.adjacent[i]];
+                    if (adj.isExcluded === false) {
+                        var line = s.line(c.coords.x, c.coords.y, adj.coords.x, adj.coords.y);
+                        line.attr({
+                            stroke: "#beaed4",
+                            strokeWidth: 1
+                        });
+                    }
+                }
+            );
+        }
     }
 
     $("#connections").on("change", function() {
@@ -68,7 +69,7 @@ $(document).ready(function() {
 
             $.each(cities, function(name, c)
             {
-                DrawCity(c);
+                // DrawCity(c);
 
                 $("#startCity").append('<option value=' + name + '>' + name + '</option>');
                 $("#endCity").append('<option value=' + name + '>' + name + '</option>');
@@ -96,6 +97,7 @@ $(document).ready(function() {
         $.each(cities, function(name, c){
             c.d = City.prototype.d;
             c.h = City.prototype.h;
+            DrawCity(c);
         });
 
         var s = new Search(cities, h);
@@ -118,8 +120,8 @@ $(document).ready(function() {
     });
 
     $('select').on('contentChanged', function() {
-        // re-initialize (update)
-        $(this).material_select();
+      // re-initialize (update)
+      $(this).material_select();
     });
 
 });
