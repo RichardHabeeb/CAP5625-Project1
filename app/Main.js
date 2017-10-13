@@ -11,20 +11,46 @@ $(document).ready(function() {
     var cities = null;
 
     var s = Snap("#svg");
+    s.clear();
 
-    function DrawCity(c) {
-        var cir = s.circle(c.coords.x, c.coords.y, 15);
-        cir.attr({
-            fill: "#4caf50",
-            strokeWidth: 0, // CamelCase...
-            "fill-opacity": 0.5, // or dash-separated names
-        });
-        var text = s.text(c.coords.x, c.coords.y + 5, c.name);
-        text.attr({
-            "text-anchor":"middle",
-            "fill":"#1b5e20"
-        });
+    function DrawCity(c, emphasise = false) {
+        if (c.isExcluded === false) {
+            var cir = s.circle(c.coords.x, c.coords.y, 15);
+            cir.attr({
+                fill: "#4caf50",
+                strokeWidth: 0, // CamelCase...
+                "fill-opacity": 0.5, // or dash-separated names
+            });
+            var text = s.text(c.coords.x, c.coords.y + 5, c.name);
+            text.attr({
+                "text-anchor": "middle",
+                "fill": "#1b5e20"
+            });
 
+            $.each(c.adjacent, function (i) {
+                    var adj = cities[c.adjacent[i]];
+                    if (adj.isExcluded === false) {
+                        drawLine(c.coords.x, c.coords.y, adj.coords.x, adj.coords.y);
+                    }
+                }
+            );
+        }
+    }
+
+    function drawLine(x1, y1, x2, y2, emphasise=false) {
+        var line = s.line(x1, y1, x2, y2);
+        console.log(x1 + " " + x2);
+        if (emphasise === true) {
+            line.attr({
+                stroke: "#386cb0",
+                strokeWidth: 3
+            });
+        } else {
+            line.attr({
+                stroke: "#beaed4",
+                strokeWidth: 1
+            });
+        }
     }
 
     $("#connections").on("change", function() {
@@ -55,7 +81,7 @@ $(document).ready(function() {
 
             $.each(cities, function(name, c)
             {
-                DrawCity(c);
+                // DrawCity(c);
 
                 $("#startCity").append('<option value=' + name + '>' + name + '</option>');
                 $("#endCity").append('<option value=' + name + '>' + name + '</option>');
@@ -83,6 +109,7 @@ $(document).ready(function() {
         $.each(cities, function(name, c){
             c.d = City.prototype.d;
             c.h = City.prototype.h;
+            DrawCity(c);
         });
 
         var s = new Search(cities, h);
@@ -97,8 +124,12 @@ $(document).ready(function() {
         }
 
         var pathString = path.reverse().shift();
+        var prev = cities[pathString];
         for (var i = 0; i < path.length; i++) {
+            var current = cities[path[i]];
+            drawLine(prev.coords.x, prev.coords.y, current.coords.x, current.coords.y, true);
             pathString = pathString + " → " + path[i];
+            prev = current;
         }
 
         $("#output").html(pathString);
