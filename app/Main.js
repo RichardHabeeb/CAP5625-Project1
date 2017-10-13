@@ -11,9 +11,8 @@ $(document).ready(function() {
     var cities = null;
 
     var s = Snap("#svg");
-    s.clear();
 
-    function DrawCity(c, emphasise = false) {
+    function DrawCity(c) {
         if (c.isExcluded === false) {
             var cir = s.circle(c.coords.x, c.coords.y, 15);
             cir.attr({
@@ -100,15 +99,19 @@ $(document).ready(function() {
             h = new ShortestDistanceHeuristic();
         }
 
+        $.each(cities, function(name, c){
+            c.d = City.prototype.d;
+            c.h = City.prototype.h;
+            c.isExcluded = false;
+        });
+
         var excludes = $("#exclude").val();
 
         for (var i = 0; i < excludes.length; i++) {
             cities[excludes[i]].isExcluded = true;
         }
 
-        $.each(cities, function(name, c){
-            c.d = City.prototype.d;
-            c.h = City.prototype.h;
+        $.each(cities, function(name, c) {
             DrawCity(c);
         });
 
