@@ -10,6 +10,23 @@ $(document).ready(function() {
 
     var cities = null;
 
+    var s = Snap("#svg");
+
+    function DrawCity(c) {
+        var cir = s.circle(c.coords.x, c.coords.y, 15);
+        cir.attr({
+            fill: "#4caf50",
+            strokeWidth: 0, // CamelCase...
+            "fill-opacity": 0.5, // or dash-separated names
+        });
+        var text = s.text(c.coords.x, c.coords.y + 5, c.name);
+        text.attr({
+            "text-anchor":"middle",
+            "fill":"#1b5e20"
+        });
+
+    }
+
     $("#connections").on("change", function() {
         const fileList = this.files;
         const connectionsFile = fileList[0];
@@ -38,6 +55,8 @@ $(document).ready(function() {
 
             $.each(cities, function(name, c)
             {
+                DrawCity(c);
+
                 $("#startCity").append('<option value=' + name + '>' + name + '</option>');
                 $("#endCity").append('<option value=' + name + '>' + name + '</option>');
                 $("#exclude").append('<option value=' + name + '>' + name + '</option>');
@@ -73,7 +92,7 @@ $(document).ready(function() {
 
         var pathString = path.reverse().shift();
         for (var i = 0; i < path.length; i++) {
-            pathString = pathString + " -> " + path[i];
+            pathString = pathString + " → " + path[i];
         }
 
         $("#output").html(pathString);
@@ -83,5 +102,9 @@ $(document).ready(function() {
       // re-initialize (update)
       $(this).material_select();
     });
+
+
+
+
 
 });
