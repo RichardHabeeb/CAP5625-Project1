@@ -51,15 +51,27 @@ $(document).ready(function() {
 
     $("#search").on("click", function() {
         var h = new Heuristic();
-        if($("#heuristic").find(":selected").text() == "straight") {
+        if($("#heuristic").find(":selected").val() == "straight") {
             h = new ShortestDistanceHeuristic();
         }
 
         var s = new Search(cities, h);
 
-        s.shortestPath(
+        var path = s.shortestPath(
             $("#startCity").find(":selected").text(),
             $("#endCity").find(":selected").text());
+
+        if(typeof(path) === "undefined") {
+            $("#output").html("No Path Found.");
+            return;
+        }
+
+        var pathString = path.reverse().shift();
+        for (var i = 0; i < path.length; i++) {
+            pathString = pathString + " -> " + path[i];
+        }
+
+        $("#output").html(pathString);
     });
 
     $('select').on('contentChanged', function() {

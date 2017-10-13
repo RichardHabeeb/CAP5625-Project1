@@ -9,15 +9,15 @@ export default (function() {
         this.cities[startCity].d = 0;
         var frontier = [startCity];
         var done = {};
+        var dest;
+
         while(frontier.length > 0)
         {
             var current = this.cities[frontier.shift()];
             done[current.name] = current;
 
             if(current.name == destCity) {
-                //TODO print path.
-                this.tracePath(startCity, current);
-                console.log("yay");
+                dest = current;
                 break;
             }
 
@@ -43,17 +43,19 @@ export default (function() {
                 }
             }
         }
+
+        return this.tracePath(startCity, dest, []);
     };
 
-    Search.prototype.tracePath = function(startCityName, destCity) {
+    Search.prototype.tracePath = function(startCityName, destCity, path) {
         if(typeof(destCity) === "undefined" || destCity === null) return;
 
         console.log(destCity.name);
-        
-        if(destCity.name === startCityName) return;
-        this.tracePath(startCityName, destCity.parent);
-    };
+        path.push(destCity.name);
 
+        if(destCity.name === startCityName) return path;
+        return this.tracePath(startCityName, destCity.parent, path);
+    };
 
     return Search;
 })();
