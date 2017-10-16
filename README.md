@@ -1,6 +1,10 @@
 # Introduction to AI: Project 1
 
-This is the official repository of Richard's and Anwesh's CAP5625 Project1 submission. We use A* to path find through a network of cities using different hueristic algorithms.
+This is the official repository of Richard's and Anwesh's CAP5625 Project1 submission. We use A\* to path find through a network of cities using different hueristic algorithms.
+
+
+*Submission note: We have provided the source code and build artifacts already in the submission zip. Open index.html to run.*
+
 
 ## Repository structure
 
@@ -15,6 +19,8 @@ CAP5625-Project1/
 ```
 
 ## Obtaining CAP5625-Project1
+
+Building only supported in linux/unix or mac system. Windows users could use cygwin to get ```npm```.
 
 ```
 git clone https://github.com/RichardHabeeb/CAP5625-Project1.git
