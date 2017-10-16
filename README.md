@@ -20,7 +20,7 @@ CAP5625-Project1/
 
 ## Obtaining CAP5625-Project1
 
-Building only supported in linux/unix or mac system. Windows users could use cygwin to get ```npm```.
+Building only supported in linux/unix or mac system. Windows users see [npm's website for installation](https://www.npmjs.com/package/npm).
 
 ```
 git clone https://github.com/RichardHabeeb/CAP5625-Project1.git
