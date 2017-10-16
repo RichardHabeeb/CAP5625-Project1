@@ -4,6 +4,9 @@ export default (function() {
         this.cities = cities;
         this.heuristic = heuristic;
     }
+
+    /* Use the a* alg to find the shortest path
+    TODO: make this have step-able increments for each iteration*/
     Search.prototype.shortestPath = function(startCity, destCity) {
         console.log(this.cities);
         this.cities[startCity].d = 0;
@@ -47,6 +50,7 @@ export default (function() {
         return this.tracePath(startCity, dest, []);
     };
 
+    /* Trace the discovered path backwards recursively */
     Search.prototype.tracePath = function(startCityName, destCity, path) {
         if(typeof(destCity) === "undefined" || destCity === null) return;
 

@@ -12,13 +12,15 @@ $(document).ready(function() {
 
     var s = Snap("#svg");
 
+
+    /* Draw a single city given a city object TODO: move rendering to a new class */
     function DrawCity(c) {
         if (c.isExcluded === false) {
             var cir = s.circle(c.coords.x, c.coords.y, 15);
             cir.attr({
                 fill: "#4caf50",
-                strokeWidth: 0, // CamelCase...
-                "fill-opacity": 0.5, // or dash-separated names
+                strokeWidth: 0,
+                "fill-opacity": 0.5,
             });
             var text = s.text(c.coords.x, c.coords.y + 5, c.name);
             text.attr({
@@ -36,6 +38,8 @@ $(document).ready(function() {
         }
     }
 
+
+    /* Draw a line on the canvas TODO: change this to cities or points */
     function drawLine(x1, y1, x2, y2, emphasise=false) {
         var line = s.line(x1, y1, x2, y2);
         console.log(x1 + " " + x2);
@@ -52,6 +56,8 @@ $(document).ready(function() {
         }
     }
 
+
+    /* Call the parser once we have a connections file */
     $("#connections").on("change", function() {
         const fileList = this.files;
         const connectionsFile = fileList[0];
@@ -65,6 +71,8 @@ $(document).ready(function() {
         });
     });
 
+
+    /* Call the parser again once we have a locations file */
     $("#locations").on("change", function() {
         const fileList = this.files;
         const locationsFile = fileList[0];
@@ -80,8 +88,6 @@ $(document).ready(function() {
 
             $.each(cities, function(name, c)
             {
-                // DrawCity(c);
-
                 $("#startCity").append('<option value=' + name + '>' + name + '</option>');
                 $("#endCity").append('<option value=' + name + '>' + name + '</option>');
                 $("#exclude").append('<option value=' + name + '>' + name + '</option>');
@@ -93,6 +99,13 @@ $(document).ready(function() {
         });
     });
 
+
+    /* Handle search button click
+            - Setup hueristic
+            - Draw cities
+
+            TODO: modularize this code
+     */
     $("#search").on("click", function() {
         var h = new Heuristic();
         if($("#heuristic").find(":selected").val() == "straight") {
@@ -138,6 +151,8 @@ $(document).ready(function() {
         $("#output").html(pathString);
     });
 
+
+    /* Update the start/end/exclude dropdowns */
     $('select').on('contentChanged', function() {
       // re-initialize (update)
       $(this).material_select();
