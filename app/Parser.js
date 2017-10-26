@@ -9,6 +9,7 @@ export default (function() {
 
     Parser.prototype.file = null;
 
+    /* Parse the connections file */
     Parser.prototype.getCities = function(callback) {
         var reader = new FileReader();
         var cities = {};
@@ -42,6 +43,8 @@ export default (function() {
         reader.readAsText(this.file);
     };
 
+
+    /* Parse the locations file */
     Parser.prototype.addLocations = function(cities, callback) {
         var reader = new FileReader();
 

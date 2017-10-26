@@ -24,6 +24,8 @@ $(document).ready(function() {
         });
     });
 
+
+    /* Call the parser again once we have a locations file */
     $("#locations").on("change", function() {
         const fileList = this.files;
         const locationsFile = fileList[0];
@@ -39,8 +41,6 @@ $(document).ready(function() {
 
             $.each(cities, function(name, c)
             {
-                // DrawCity(c);
-
                 $("#startCity").append('<option value=' + name + '>' + name + '</option>');
                 $("#endCity").append('<option value=' + name + '>' + name + '</option>');
                 $("#exclude").append('<option value=' + name + '>' + name + '</option>');
@@ -52,6 +52,13 @@ $(document).ready(function() {
         });
     });
 
+
+    /* Handle search button click
+            - Setup hueristic
+            - Draw cities
+
+            TODO: modularize this code
+     */
     var search = null;
 
     $("#searchStep").on("click", function() {
@@ -160,6 +167,8 @@ $(document).ready(function() {
         $("#output").html(pathString);*/
     });
 
+
+    /* Update the start/end/exclude dropdowns */
     $('select').on('contentChanged', function() {
       // re-initialize (update)
       $(this).material_select();

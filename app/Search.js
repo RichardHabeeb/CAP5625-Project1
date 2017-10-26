@@ -102,6 +102,7 @@ export default (function() {
         return this.tracePath(startCity, dest, []);
     };
 
+    /* Trace the discovered path backwards recursively */
     Search.prototype.tracePath = function(startCityName, destCity, path) {
         if(typeof(destCity) === "undefined" || destCity === null) return;
 
