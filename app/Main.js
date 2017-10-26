@@ -3,54 +3,13 @@ import Heuristic from './Heuristic.js';
 import ShortestDistanceHeuristic from './ShortestDistanceHeuristic.js';
 import Parser from './Parser.js';
 import Search from './Search.js';
+import Renderer from './Renderer.js';
 
 
 $(document).ready(function() {
     $('select').material_select();
 
     var cities = null;
-
-    var s = Snap("#svg");
-
-    function DrawCity(c) {
-        if (c.isExcluded === false) {
-            var cir = s.circle(c.coords.x, c.coords.y, 15);
-            cir.attr({
-                fill: "#4caf50",
-                strokeWidth: 0, // CamelCase...
-                "fill-opacity": 0.5, // or dash-separated names
-            });
-            var text = s.text(c.coords.x, c.coords.y + 5, c.name);
-            text.attr({
-                "text-anchor": "middle",
-                "fill": "#1b5e20"
-            });
-
-            $.each(c.adjacent, function (i) {
-                    var adj = cities[c.adjacent[i]];
-                    if (adj.isExcluded === false) {
-                        drawLine(c.coords.x, c.coords.y, adj.coords.x, adj.coords.y);
-                    }
-                }
-            );
-        }
-    }
-
-    function drawLine(x1, y1, x2, y2, emphasise=false) {
-        var line = s.line(x1, y1, x2, y2);
-        console.log(x1 + " " + x2);
-        if (emphasise === true) {
-            line.attr({
-                stroke: "#386cb0",
-                strokeWidth: 3
-            });
-        } else {
-            line.attr({
-                stroke: "#beaed4",
-                strokeWidth: 1
-            });
-        }
-    }
 
     $("#connections").on("change", function() {
         const fileList = this.files;
@@ -93,6 +52,51 @@ $(document).ready(function() {
         });
     });
 
+    var search = null;
+
+    $("#searchStep").on("click", function() {
+        if (search === null) {
+            var h = new Heuristic();
+            if($("#heuristic").find(":selected").val() == "straight") {
+                h = new ShortestDistanceHeuristic();
+            }
+
+            $.each(cities, function(name, c){
+                c.d = City.prototype.d;
+                c.h = City.prototype.h;
+                c.isExcluded = false;
+            });
+
+            var excludes = $("#exclude").val();
+
+            for (var i = 0; i < excludes.length; i++) {
+                cities[excludes[i]].isExcluded = true;
+            }
+
+            var snap = Snap("#svg");
+            var renderer = new Renderer(snap);
+
+            $.each(cities, function(name, c) {
+                c.setShape(renderer.getCityShape(c));
+                $.each(c.adjacent, function (i) {
+                        var adj = cities[c.adjacent[i]];
+                        if (adj.isExcluded === false) {
+                            renderer.drawLine(c, adj);
+                        }
+                    }
+                );
+            });
+
+            search = new Search (
+                cities,
+                h,
+                $("#startCity").find(":selected").text(),
+                $("#endCity").find(":selected").text());
+        }
+
+        search.shortestPathStep();
+    });
+
     $("#search").on("click", function() {
         var h = new Heuristic();
         if($("#heuristic").find(":selected").val() == "straight") {
@@ -111,11 +115,29 @@ $(document).ready(function() {
             cities[excludes[i]].isExcluded = true;
         }
 
+        var snap = Snap("#svg");
+        var renderer = new Renderer(snap);
+
         $.each(cities, function(name, c) {
-            DrawCity(c);
+            c.setShape(renderer.getCityShape(c));
+            $.each(c.adjacent, function (i) {
+                    var adj = cities[c.adjacent[i]];
+                    if (adj.isExcluded === false) {
+                        renderer.drawLine(c, adj);
+                    }
+                }
+            );
         });
 
-        var s = new Search(cities, h);
+        var s = new Search (
+            cities,
+            h,
+            $("#startCity").find(":selected").text(),
+            $("#endCity").find(":selected").text());
+
+
+
+        /*var s = new Search(cities, h);
 
         var path = s.shortestPath(
             $("#startCity").find(":selected").text(),
@@ -130,12 +152,12 @@ $(document).ready(function() {
         var prev = cities[pathString];
         for (var i = 0; i < path.length; i++) {
             var current = cities[path[i]];
-            drawLine(prev.coords.x, prev.coords.y, current.coords.x, current.coords.y, true);
+            renderer.drawLine(prev, current, true);
             pathString = pathString + " → " + path[i];
             prev = current;
         }
 
-        $("#output").html(pathString);
+        $("#output").html(pathString);*/
     });
 
     $('select').on('contentChanged', function() {

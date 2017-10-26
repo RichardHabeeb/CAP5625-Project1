@@ -2,7 +2,7 @@ export default (function() {
 
     var Heuristic = function() {
 
-    }
+    };
     Heuristic.prototype.distBetween = function(a, b) {
         return 1;
     };
