@@ -10,6 +10,9 @@ $(document).ready(function() {
     $('select').material_select();
 
     var cities = null;
+    var search = null;
+    var snap = Snap("#svg");
+    var renderer = new Renderer(snap);
 
     $("#connections").on("change", function() {
         const fileList = this.files;
@@ -23,7 +26,6 @@ $(document).ready(function() {
             cities = c;
         });
     });
-
 
     /* Call the parser again once we have a locations file */
     $("#locations").on("change", function() {
@@ -52,57 +54,45 @@ $(document).ready(function() {
         });
     });
 
-
-    /* Handle search button click
-            - Setup hueristic
-            - Draw cities
-
-            TODO: modularize this code
-     */
-    var search = null;
-    var snap = Snap("#svg");
-    var renderer = new Renderer(snap);
-
-    $("#searchStep").on("click", function() {
-        if (search === null) {
-            var h = new Heuristic();
-            if($("#heuristic").find(":selected").val() == "straight") {
-                h = new ShortestDistanceHeuristic();
-            }
-
-            $.each(cities, function(name, c){
-                c.d = City.prototype.d;
-                c.h = City.prototype.h;
-                c.isExcluded = false;
-            });
-
-            var excludes = $("#exclude").val();
-
-            for (var i = 0; i < excludes.length; i++) {
-                cities[excludes[i]].isExcluded = true;
-            }
-
-            $.each(cities, function(name, c) {
-                renderer.drawCity(c);
-                $.each(c.adjacent, function (i) {
-                        var adj = cities[c.adjacent[i]];
-                        if (adj.isExcluded === false) {
-                            renderer.drawLine(c, adj);
-                        }
-                    }
-                );
-            });
-
-            search = new Search (
-                cities,
-                h,
-                $("#startCity").find(":selected").text(),
-                $("#endCity").find(":selected").text()
-            );
+    function setupSearch() {
+        var h = new Heuristic();
+        if ($("#heuristic").find(":selected").val() == "straight") {
+            h = new ShortestDistanceHeuristic();
         }
 
-        var status = search.shortestPathStep();
+        $.each(cities, function (name, c) {
+            c.d = City.prototype.d;
+            c.h = City.prototype.h;
+            c.isExcluded = false;
+        });
 
+        var excludes = $("#exclude").val();
+
+        for (var i = 0; i < excludes.length; i++) {
+            cities[excludes[i]].isExcluded = true;
+        }
+
+        $.each(cities, function (name, c) {
+            renderer.drawCity(c);
+            $.each(c.adjacent, function (i) {
+                    var adj = cities[c.adjacent[i]];
+                    if (adj.isExcluded === false) {
+                        renderer.drawLine(c, adj);
+                    }
+                }
+            );
+        });
+
+        search = new Search(
+            cities,
+            h,
+            $("#startCity").find(":selected").text(),
+            $("#endCity").find(":selected").text(),
+            renderer
+        );
+    }
+
+    function checkSearchStatus(status) {
         if (status === "done") {
             var path = search.path;
             var pathString = path.reverse().shift();
@@ -115,74 +105,33 @@ $(document).ready(function() {
             }
 
             $("#output").html(pathString);
+            $("#searchStep").addClass("disabled");
+            $("#search").addClass("disabled");
         } else if (status === "error") {
             $("#output").html("No Path Found.");
-            $("#searchStep").attr("disabled");
+            $("#searchStep").addClass("disabled");
+            $("#search").addClass("disabled");
+        }
+    }
+
+    $("#searchStep").on("click", function() {
+        if (search === null) {
+            setupSearch();
         }
 
+        var status = search.shortestPathStep();
+
+        checkSearchStatus(status);
     });
 
     $("#search").on("click", function() {
-        var h = new Heuristic();
-        if($("#heuristic").find(":selected").val() == "straight") {
-            h = new ShortestDistanceHeuristic();
+        if (search === null) {
+            setupSearch();
         }
 
-        $.each(cities, function(name, c){
-            c.d = City.prototype.d;
-            c.h = City.prototype.h;
-            c.isExcluded = false;
-        });
+        var status = search.shortestPath();
 
-        var excludes = $("#exclude").val();
-
-        for (var i = 0; i < excludes.length; i++) {
-            cities[excludes[i]].isExcluded = true;
-        }
-
-        var snap = Snap("#svg");
-        var renderer = new Renderer(snap);
-
-        $.each(cities, function(name, c) {
-            c.setShape(renderer.getCityShape(c));
-            $.each(c.adjacent, function (i) {
-                    var adj = cities[c.adjacent[i]];
-                    if (adj.isExcluded === false) {
-                        renderer.drawLine(c, adj);
-                    }
-                }
-            );
-        });
-
-        var s = new Search (
-            cities,
-            h,
-            $("#startCity").find(":selected").text(),
-            $("#endCity").find(":selected").text());
-
-
-
-        /*var s = new Search(cities, h);
-
-        var path = s.shortestPath(
-            $("#startCity").find(":selected").text(),
-            $("#endCity").find(":selected").text());
-
-        if(typeof(path) === "undefined") {
-            $("#output").html("No Path Found.");
-            return;
-        }
-
-        var pathString = path.reverse().shift();
-        var prev = cities[pathString];
-        for (var i = 0; i < path.length; i++) {
-            var current = cities[path[i]];
-            renderer.drawLine(prev, current, true);
-            pathString = pathString + " → " + path[i];
-            prev = current;
-        }
-
-        $("#output").html(pathString);*/
+        checkSearchStatus(status);
     });
 
 
