@@ -1,4 +1,5 @@
 import City from './City.js';
+import Point from './Point.js'
 
 export default (function() {
 
@@ -7,9 +8,10 @@ export default (function() {
     };
 
     Renderer.prototype.snap = null;
+    Renderer.prototype.cityRadius = 15;
 
     Renderer.prototype.drawCity = function(c) {
-        var cir = this.snap.circle(c.coords.x, c.coords.y, 15);
+        var cir = this.snap.circle(c.coords.x, c.coords.y, this.cityRadius);
         cir.attr({
             id: c.name,
             fill: "#4caf50",
@@ -24,7 +26,7 @@ export default (function() {
             });
         }
 
-        var text = this.snap.text(c.coords.x, c.coords.y-15, c.name);
+        var text = this.snap.text(c.coords.x, c.coords.y, c.name);
         text.attr({
             "text-anchor": "middle",
             "fill": "#1b5e20"
@@ -32,8 +34,11 @@ export default (function() {
     };
 
     Renderer.prototype.drawLine = function drawLine(c1, c2, emphasise=false) {
-        var p1 = c1.coords;
-        var p2 = c2.coords;
+        var theta1 = Math.atan2(c2.coords.y - c1.coords.y, c2.coords.x - c1.coords.x);
+        var theta2 = Math.atan2(c1.coords.y - c2.coords.y, c1.coords.x - c2.coords.x);
+
+        var p1 = new Point(c1.coords.x + this.cityRadius * Math.cos(theta1), c1.coords.y + this.cityRadius * Math.sin(theta1));
+        var p2 = new Point(c2.coords.x + this.cityRadius * Math.cos(theta2), c2.coords.y + this.cityRadius * Math.sin(theta2));
 
         var line = this.snap.line(p1.x, p1.y, p2.x, p2.y);
         var id = [c1.name, c2.name].sort().join();
@@ -55,4 +60,3 @@ export default (function() {
 
     return Renderer;
 })();
-
