@@ -11,10 +11,23 @@ export default (function() {
     Renderer.prototype.cityRadius = 15;
     Renderer.prototype.isRendered = false;
 
+    Renderer.prototype.onClickCity = function () {
+        $('#edit').removeClass("hidden");
+        $('#editInfo').addClass("hidden");
+
+        console.log(this);
+        console.log(Snap.select("#"+this.node.id).select("circle:nth-child(1)").getBBox());
+
+        var nodeInfo = Snap.select("#"+this.node.id).select("circle:nth-child(1)").getBBox();
+        $('#xcoord').val(nodeInfo.cx);
+        $('#ycoord').val(nodeInfo.cy);
+        $('#city').val(this.node.id);
+    };
+
     Renderer.prototype.drawCity = function(c) {
         var cir = this.snap.circle(c.coords.x, c.coords.y, this.cityRadius);
         cir.attr({
-            id: c.name,
+            // id: c.name,
             fill: "#4caf50",
             strokeWidth: 0, // CamelCase...
             "fill-opacity": 0.5, // or dash-separated names
@@ -32,6 +45,9 @@ export default (function() {
             "text-anchor": "middle",
             "fill": "#1b5e20"
         });
+
+        var group = this.snap.group(cir, text).attr({id: c.name});
+        group.click(this.onClickCity);
     };
 
     Renderer.prototype.highlightCity = function(c, fill="#386cb0") {
@@ -41,7 +57,7 @@ export default (function() {
     };
 
     Renderer.prototype.animateCity = function (c) {
-        Snap.select("#"+c.name).attr({
+        Snap.select("#"+c.name).select("circle:nth-child(1)").attr({
             fill: "#a6cee3",
             r: 1
         }).animate({r:15}, 1000);
@@ -58,13 +74,18 @@ export default (function() {
     };
 
     Renderer.prototype.drawLine = function drawLine(c1, c2) {
+        var lineId = [c1.name, c2.name].sort().join("");
+        if (Snap.select("#"+lineId) !== null){
+            // Line already exists. return.
+            return;
+        }
+
         var {p1, p2} = this.calculateBoundaryPoints(c2, c1);
 
         var line = this.snap.line(p1.x, p1.y, p2.x, p2.y);
-        var id = [c1.name, c2.name].sort().join("");
 
         line.attr({
-            id: id,
+            id: lineId,
             stroke: "#beaed4",
             strokeWidth: 1
         });
@@ -97,18 +118,27 @@ export default (function() {
         this.isRendered = true;
     };
 
+    Renderer.prototype.redrawCity = function(c, cities) {
+        Snap.select("#"+c.name).remove();
+        this.drawCity(c);
+
+        for (var i = 0; i < c.adjacent.length; i++) {
+            var adj = cities[c.adjacent[i]];
+            this.redrawLine(c, adj);
+        }
+    };
+
+    Renderer.prototype.redrawLine = function(c1, c2) {
+        var lineId = [c1.name, c2.name].sort().join("");
+        lineId = "#"+lineId;
+        console.log("Line id: " + lineId);
+        Snap.select(lineId).remove();
+        this.drawLine(c1, c2);
+    };
+
     Renderer.prototype.redrawCities = function (cities) {
         for (const [name, c] of Object.entries(cities)) {
-            Snap.select("#"+name).remove();
-            this.drawCity(c);
-
-            for (var i = 0; i < c.adjacent.length; i++) {
-                var adj = cities[c.adjacent[i]];
-                var lineId = [name, adj.name].sort().join("");
-
-                Snap.select("#"+lineId).remove();
-                this.drawLine(c, adj);
-            }
+            this.redrawCity(c, cities);
         }
     };
 

@@ -1,4 +1,5 @@
 import City from './City.js';
+import Point from './Point.js';
 import Heuristic from './Heuristic.js';
 import ShortestDistanceHeuristic from './ShortestDistanceHeuristic.js';
 import Parser from './Parser.js';
@@ -138,6 +139,16 @@ $(document).ready(function() {
         $("#search").removeClass("disabled");
         $("#reset").addClass("disabled");
 
+    });
+
+    $("#update").on("click", function(){
+        var city = $("#city").val();
+        var xcoord = $("#xcoord").val();
+        var ycoord = $("#ycoord").val();
+
+        cities[city].setCoords(new Point(parseInt(xcoord), parseInt(ycoord)));
+
+        renderer.redrawCity(cities[city], cities);
     });
 
     /* Update the start/end/exclude dropdowns */
