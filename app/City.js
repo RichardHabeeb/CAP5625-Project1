@@ -13,14 +13,9 @@ export default (function() {
     City.prototype.d = Number.MAX_VALUE;
     City.prototype.coords = new Point(0, 0);
     City.prototype.isExcluded = false;
-    City.shape = null;
 
     City.prototype.setCoords = function (p) {
         this.coords = p
-    };
-
-    City.prototype.setShape = function (shape) {
-        this.shape = shape;
     };
 
     return City;

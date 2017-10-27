@@ -7,7 +7,6 @@ export default (function() {
         this.startCity = startCity;
         this.destCity = destCity;
 
-        // this.frontier = [startCity];
         this.frontier = [this.cities[startCity]];
         this.done = {};
         this.cities[startCity].d = 0;
@@ -27,6 +26,10 @@ export default (function() {
         this.done[current.name] = current;
         this.status = "searching";
 
+        Snap.select("#"+current.name).attr({
+            fill: "#1f78b4"
+        });
+
         if(current.name == this.destCity) {
             console.log("Done.");
             this.path = this.tracePath(this.startCity, this.cities[this.destCity], []);
@@ -45,7 +48,13 @@ export default (function() {
             var newDist = current.d + this.heuristic.distBetween(current, next);
             if(newDist >= next.d) continue;
 
-            next.shape.attr({fill: "#000"});
+            Snap.select("#"+next.name).attr({
+                fill: "#a6cee3"
+            });
+
+            var lineId = [current.name, next.name].sort().join();
+
+            console.log("line id: " + lineId);
 
             next.parent = current;
             next.d = newDist;

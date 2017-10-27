@@ -60,7 +60,8 @@ $(document).ready(function() {
             TODO: modularize this code
      */
     var search = null;
-    var renderer = null;
+    var snap = Snap("#svg");
+    var renderer = new Renderer(snap);
 
     $("#searchStep").on("click", function() {
         if (search === null) {
@@ -81,11 +82,8 @@ $(document).ready(function() {
                 cities[excludes[i]].isExcluded = true;
             }
 
-            var snap = Snap("#svg");
-            renderer = new Renderer(snap);
-
             $.each(cities, function(name, c) {
-                c.setShape(renderer.getCityShape(c));
+                renderer.drawCity(c);
                 $.each(c.adjacent, function (i) {
                         var adj = cities[c.adjacent[i]];
                         if (adj.isExcluded === false) {
@@ -99,7 +97,8 @@ $(document).ready(function() {
                 cities,
                 h,
                 $("#startCity").find(":selected").text(),
-                $("#endCity").find(":selected").text());
+                $("#endCity").find(":selected").text()
+            );
         }
 
         var status = search.shortestPathStep();
