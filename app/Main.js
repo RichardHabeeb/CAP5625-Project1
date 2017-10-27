@@ -127,18 +127,15 @@ $(document).ready(function() {
         search = null;
 
         console.log("Locations file: " + locationsFile.name);
-        (new Parser(locationsFile)).addLocations(cities);
+        (new Parser(locationsFile)).addLocations(cities, function() {
+            console.log("Reset cities");
+            console.log(cities);
+            renderer.redrawCities(cities);
 
-        $.each($("#exclude option:selected"), function() {
-            $(this).removeClass('active');
+            $("#searchStep").removeClass("disabled");
+            $("#search").removeClass("disabled");
+            $("#reset").addClass("disabled");
         });
-
-        renderer.redrawCities(cities);
-
-        $("#searchStep").removeClass("disabled");
-        $("#search").removeClass("disabled");
-        $("#reset").addClass("disabled");
-
     });
 
     $("#update").on("click", function(){

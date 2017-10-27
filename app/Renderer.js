@@ -15,9 +15,6 @@ export default (function() {
         $('#edit').removeClass("hidden");
         $('#editInfo').addClass("hidden");
 
-        console.log(this);
-        console.log(Snap.select("#"+this.node.id).select("circle:nth-child(1)").getBBox());
-
         var nodeInfo = Snap.select("#"+this.node.id).select("circle:nth-child(1)").getBBox();
         $('#xcoord').val(nodeInfo.cx);
         $('#ycoord').val(nodeInfo.cy);
@@ -131,7 +128,7 @@ export default (function() {
     Renderer.prototype.redrawLine = function(c1, c2) {
         var lineId = [c1.name, c2.name].sort().join("");
         lineId = "#"+lineId;
-        console.log("Line id: " + lineId);
+
         Snap.select(lineId).remove();
         this.drawLine(c1, c2);
     };
