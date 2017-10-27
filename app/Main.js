@@ -14,6 +14,7 @@ $(document).ready(function() {
     var search = null;
     var snap = Snap("#svg");
     var renderer = new Renderer(snap);
+    var isEdit = false;
 
     $("#connections").on("change", function() {
         const fileList = this.files;
@@ -41,6 +42,9 @@ $(document).ready(function() {
             $("#startCity").removeAttr("disabled");
             $("#endCity").removeAttr("disabled");
             $("#exclude").removeAttr("disabled");
+            $("#search").removeClass("disabled");
+            $("#searchStep").removeClass("disabled");
+            $("#editMode").removeClass("disabled");
 
             $.each(cities, function(name, c)
             {
@@ -51,6 +55,8 @@ $(document).ready(function() {
                 $("#endCity").trigger('contentChanged');
                 $("#exclude").trigger('contentChanged');
             });
+
+            renderer.drawCities(cities);
 
         });
     });
@@ -66,14 +72,6 @@ $(document).ready(function() {
             c.h = City.prototype.h;
             c.isExcluded = false;
         });
-
-        var excludes = $("#exclude").val();
-
-        for (var i = 0; i < excludes.length; i++) {
-            cities[excludes[i]].isExcluded = true;
-        }
-
-        renderer.drawCities(cities);
 
         search = new Search(
             cities,
@@ -106,6 +104,7 @@ $(document).ready(function() {
             setupSearch();
         }
 
+        $("#editMode").addClass("disabled");
         var status = search.shortestPathStep();
 
         checkSearchStatus(status);
@@ -116,6 +115,7 @@ $(document).ready(function() {
             setupSearch();
         }
 
+        $("#editMode").addClass("disabled");
         var status = search.shortestPath();
 
         checkSearchStatus(status);
@@ -134,11 +134,12 @@ $(document).ready(function() {
 
             $("#searchStep").removeClass("disabled");
             $("#search").removeClass("disabled");
+            $("#editMode").removeClass("disabled");
             $("#reset").addClass("disabled");
         });
     });
 
-    $("#update").on("click", function(){
+    $("#update").on("click", function() {
         var city = $("#city").val();
         var xcoord = $("#xcoord").val();
         var ycoord = $("#ycoord").val();
@@ -146,6 +147,33 @@ $(document).ready(function() {
         cities[city].setCoords(new Point(parseInt(xcoord), parseInt(ycoord)));
 
         renderer.redrawCity(cities[city], cities);
+    });
+
+    $("#editMode").on("click", function() {
+        if (isEdit) {
+            $(this).html("Enter Edit Mode").removeClass("red").addClass("blue");
+            $("#editForm").addClass("hidden");
+            $("#search").removeClass("hidden");
+            $("#searchStep").removeClass("hidden");
+            $("#reset").removeClass("hidden");
+
+            var excludes = $("#exclude").val();
+
+            for (var i = 0; i < excludes.length; i++) {
+                cities[excludes[i]].isExcluded = true;
+                renderer.redrawCity(cities[excludes[i]], cities);
+            }
+
+            isEdit = false;
+        } else {
+            $(this).html("Exit Edit Mode").removeClass("blue").addClass("red");
+            $("#editForm").removeClass("hidden");
+            $("#search").addClass("hidden");
+            $("#searchStep").addClass("hidden");
+            $("#reset").addClass("hidden");
+
+            isEdit = true;
+        }
     });
 
     /* Update the start/end/exclude dropdowns */
