@@ -1,0 +1,43 @@
+<diagram program="umletino" version="14.2"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>810</x><y>399</y><w>260</w><h>180</h></coordinates><panel_attributes>City
+--
++name: String
++adjacent: City [ ]
++parent: City
++h: Number
++d: Number
++coords: Point
++isExcluded: Boolean
+--
+#City(name: String, adjacent: City [ ])
+#setCoords(x: Number, y: Number): undefined</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1280</x><y>469</y><w>310</w><h>100</h></coordinates><panel_attributes>Heuristic
+--
+
+--
+#Heuristic()
+#distBetween(a: City, b: City): Number
+#underEstimateCost(current: City, dest: City): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1280</x><y>629</y><w>310</w><h>100</h></coordinates><panel_attributes>ShortestDistanceHeuristic
+--
+
+--
+#ShortestDistanceHeuristic()
+#distBetween(a: City, b: City): Number
+#underEstimateCost(current: City, dest: City): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1420</x><y>559</y><w>30</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;70</additional_attributes></element><element><id>UMLClass</id><coordinates><x>850</x><y>639</y><w>170</w><h>100</h></coordinates><panel_attributes>Point
+--
++x: Number
++y: Number
+--
+#Point(x: Number, y: Number)
+#dist(p: Point): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>780</x><y>179</y><w>330</w><h>90</h></coordinates><panel_attributes>Parser
+--
++file: String
+--
+#getCities(callback: function): undefined
+#addLocations(cities: City [ ], callback: function): undefined</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>390</x><y>429</y><w>260</w><h>90</h></coordinates><panel_attributes>Renderer
+--
+
+--
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1260</x><y>269</y><w>260</w><h>90</h></coordinates><panel_attributes>Search
+--
+
+--
+</panel_attributes><additional_attributes></additional_attributes></element></diagram>
