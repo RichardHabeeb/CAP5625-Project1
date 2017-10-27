@@ -48,7 +48,7 @@ export default (function() {
     };
 
     Renderer.prototype.highlightCity = function(c, fill="#386cb0") {
-        Snap.select("#"+c.name).attr({
+        Snap.select("#"+c.name).select("circle:nth-child(1)").attr({
             fill: fill
         });
     };
