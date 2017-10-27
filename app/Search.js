@@ -1,6 +1,8 @@
+import Point from './Point.js'
+
 export default (function() {
 
-    var Search = function(cities, heuristic, startCity, destCity) {
+    var Search = function(cities, heuristic, startCity, destCity, renderer) {
         this.cities = cities;
         this.heuristic = heuristic;
 
@@ -13,6 +15,8 @@ export default (function() {
 
         this.path = "";
         this.status = "start";
+
+        this.renderer = renderer
     };
 
     Search.prototype.shortestPathStep = function () {
@@ -21,20 +25,16 @@ export default (function() {
             return this.status;
         }
 
-        // var current = this.cities[this.frontier.shift()];
         var current = this.frontier.shift();
         this.done[current.name] = current;
         this.status = "searching";
 
-        Snap.select("#"+current.name).attr({
-            fill: "#1f78b4"
-        });
+        // Color current node.
+        this.renderer.highlightCity(current);
 
         if(current.name == this.destCity) {
-            console.log("Done.");
             this.path = this.tracePath(this.startCity, this.cities[this.destCity], []);
             this.status = "done";
-            console.log(this.path);
             return this.status;
         }
 
@@ -48,73 +48,30 @@ export default (function() {
             var newDist = current.d + this.heuristic.distBetween(current, next);
             if(newDist >= next.d) continue;
 
-            Snap.select("#"+next.name).attr({
-                fill: "#a6cee3"
-            });
-
-            var lineId = [current.name, next.name].sort().join();
-
-            console.log("line id: " + lineId);
+            this.renderer.animateLine(current, next);
 
             next.parent = current;
             next.d = newDist;
             next.h = next.d + this.heuristic.underEstimateCost(next, this.cities[this.destCity]);
 
-            if(this.frontier.indexOf(next.name) == -1) {
-                console.log("push next.");
-
+            if(this.frontier.indexOf(next.name) === -1) {
                 this.frontier.push(next);
                 this.frontier.sort(function(a, b) {
                     return a.h - b.h;
                 });
-                console.log(this.frontier);
             }
         }
+
+        // Color current node Done.
+        this.renderer.highlightCity(current, "#ff7f00");
 
         return this.status;
     };
 
-    Search.prototype.shortestPath = function(startCity, destCity) {
-        console.log(this.cities);
-        this.cities[startCity].d = 0;
-        var frontier = [startCity];
-        var done = {};
-        var dest;
-
-        while(frontier.length > 0)
-        {
-            var current = this.cities[frontier.shift()];
-            done[current.name] = current;
-
-            if(current.name == destCity) {
-                dest = current;
-                break;
-            }
-
-            for(var i=0; i<current.adjacent.length; i++)
-            {
-                var next = this.cities[current.adjacent[i]];
-                if(typeof(next) === "undefined")
-                    console.log(current);
-                if(next.name in done || next.isExcluded) continue;
-
-                var newDist = current.d + this.heuristic.distBetween(current, next);
-                if(newDist >= next.d) continue;
-
-                next.parent = current;
-                next.d = newDist;
-                next.h = next.d + this.heuristic.underEstimateCost(next, this.cities[destCity]);
-
-                if(frontier.indexOf(next.name) == -1) {
-                    frontier.push(next.name);
-                    frontier.sort(function(a, b) {
-                        return a.h - b.h;
-                    });
-                }
-            }
-        }
-
-        return this.tracePath(startCity, dest, []);
+    Search.prototype.shortestPath = function() {
+       var status = this.shortestPathStep();
+       if (status === "done" || status === "error") return status;
+       return this.shortestPath()
     };
 
     /* Trace the discovered path backwards recursively */
