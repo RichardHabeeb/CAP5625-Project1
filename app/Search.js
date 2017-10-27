@@ -7,24 +7,32 @@ export default (function() {
         this.startCity = startCity;
         this.destCity = destCity;
 
-        this.frontier = [startCity];
+        // this.frontier = [startCity];
+        this.frontier = [this.cities[startCity]];
         this.done = {};
         this.cities[startCity].d = 0;
 
-        console.log("Search constructor.");
-        console.log(this);
-        // this.dest;
+        this.path = "";
+        this.status = "start";
     };
 
     Search.prototype.shortestPathStep = function () {
-        var current = this.cities[this.frontier.shift()];
+        if (this.frontier.length == 0) {
+            this.status = "error";
+            return this.status;
+        }
+
+        // var current = this.cities[this.frontier.shift()];
+        var current = this.frontier.shift();
         this.done[current.name] = current;
+        this.status = "searching";
 
         if(current.name == this.destCity) {
             console.log("Done.");
-            // this.dest = current;
-            // do something.
-            this.tracePath(this.startCity, this.destCity, []);
+            this.path = this.tracePath(this.startCity, this.cities[this.destCity], []);
+            this.status = "done";
+            console.log(this.path);
+            return this.status;
         }
 
         for(var i=0; i<current.adjacent.length; i++)
@@ -37,7 +45,7 @@ export default (function() {
             var newDist = current.d + this.heuristic.distBetween(current, next);
             if(newDist >= next.d) continue;
 
-            next.shape.attr({fill: "#66a61e"});
+            next.shape.attr({fill: "#000"});
 
             next.parent = current;
             next.d = newDist;
@@ -46,17 +54,15 @@ export default (function() {
             if(this.frontier.indexOf(next.name) == -1) {
                 console.log("push next.");
 
-                this.frontier.push(next.name);
+                this.frontier.push(next);
                 this.frontier.sort(function(a, b) {
                     return a.h - b.h;
                 });
                 console.log(this.frontier);
-            } else {
-                console.log("not pushing next.");
             }
         }
 
-
+        return this.status;
     };
 
     Search.prototype.shortestPath = function(startCity, destCity) {

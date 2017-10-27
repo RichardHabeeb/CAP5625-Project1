@@ -60,6 +60,7 @@ $(document).ready(function() {
             TODO: modularize this code
      */
     var search = null;
+    var renderer = null;
 
     $("#searchStep").on("click", function() {
         if (search === null) {
@@ -81,7 +82,7 @@ $(document).ready(function() {
             }
 
             var snap = Snap("#svg");
-            var renderer = new Renderer(snap);
+            renderer = new Renderer(snap);
 
             $.each(cities, function(name, c) {
                 c.setShape(renderer.getCityShape(c));
@@ -101,7 +102,25 @@ $(document).ready(function() {
                 $("#endCity").find(":selected").text());
         }
 
-        search.shortestPathStep();
+        var status = search.shortestPathStep();
+
+        if (status === "done") {
+            var path = search.path;
+            var pathString = path.reverse().shift();
+            var prev = cities[pathString];
+            for (var i = 0; i < path.length; i++) {
+                var current = cities[path[i]];
+                renderer.drawLine(prev, current, true);
+                pathString = pathString + " → " + path[i];
+                prev = current;
+            }
+
+            $("#output").html(pathString);
+        } else if (status === "error") {
+            $("#output").html("No Path Found.");
+            $("#searchStep").attr("disabled");
+        }
+
     });
 
     $("#search").on("click", function() {

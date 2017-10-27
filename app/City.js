@@ -15,8 +15,8 @@ export default (function() {
     City.prototype.isExcluded = false;
     City.shape = null;
 
-    City.prototype.setCoords = function (x, y) {
-        this.coords = new Point(parseInt(x), parseInt(y))
+    City.prototype.setCoords = function (p) {
+        this.coords = p
     };
 
     City.prototype.setShape = function (shape) {

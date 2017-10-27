@@ -67,7 +67,7 @@ export default (function() {
                 var x = locs.shift();
                 var y = locs.shift();
 
-                cities[name].setCoords(x, y);
+                cities[name].setCoords(new Point(x, y));
             }
 
             if(typeof callback === "function") {
