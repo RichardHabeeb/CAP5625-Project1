@@ -9,6 +9,7 @@ export default (function() {
 
     Renderer.prototype.snap = null;
     Renderer.prototype.cityRadius = 15;
+    Renderer.prototype.isRendered = false;
 
     Renderer.prototype.drawCity = function(c) {
         var cir = this.snap.circle(c.coords.x, c.coords.y, this.cityRadius);
@@ -56,25 +57,17 @@ export default (function() {
         return {p1, p2};
     };
 
-    Renderer.prototype.drawLine = function drawLine(c1, c2, emphasise=false) {
+    Renderer.prototype.drawLine = function drawLine(c1, c2) {
         var {p1, p2} = this.calculateBoundaryPoints(c2, c1);
 
         var line = this.snap.line(p1.x, p1.y, p2.x, p2.y);
         var id = [c1.name, c2.name].sort().join("");
 
-        if (emphasise === true) {
-            line.attr({
-                id: id,
-                stroke: "#386cb0",
-                strokeWidth: 3
-            });
-        } else {
-            line.attr({
-                id: id,
-                stroke: "#beaed4",
-                strokeWidth: 1
-            });
-        }
+        line.attr({
+            id: id,
+            stroke: "#beaed4",
+            strokeWidth: 1
+        });
     };
 
     Renderer.prototype.animateLine = function (c1, c2) {
@@ -86,6 +79,58 @@ export default (function() {
             x1: p1.x, y1: p1.y,
             x2: p1.x, y2: p1.y
         }).animate({x2: p2.x, y2: p2.y}, 1000);
+    };
+
+    Renderer.prototype.drawCities = function (cities) {
+        if (this.isRendered === true) {
+            this.redrawCities(cities);
+            return;
+        }
+
+        for (const [name, c] of Object.entries(cities)) {
+            this.drawCity(c);
+            for (var i = 0; i < c.adjacent.length; i++) {
+                var adj = cities[c.adjacent[i]];
+                this.drawLine(c, adj);
+            }
+        }
+        this.isRendered = true;
+    };
+
+    Renderer.prototype.redrawCities = function (cities) {
+        for (const [name, c] of Object.entries(cities)) {
+            Snap.select("#"+name).remove();
+            this.drawCity(c);
+
+            for (var i = 0; i < c.adjacent.length; i++) {
+                var adj = cities[c.adjacent[i]];
+                var lineId = [name, adj.name].sort().join("");
+
+                Snap.select("#"+lineId).remove();
+                this.drawLine(c, adj);
+            }
+        }
+    };
+
+    Renderer.prototype.emphasiseLine = function (c1, c2) {
+        var lineId = [c1.name, c2.name].sort().join("");
+
+        Snap.select("#"+lineId).attr({
+            stroke: "#386cb0",
+            strokeWidth: 3
+        });
+    };
+
+    Renderer.prototype.drawPath = function (path, cities) {
+        var pathString = path.shift();
+        var prev = cities[pathString];
+        for (var i = 0; i < path.length; i++) {
+            var current = cities[path[i]];
+            this.emphasiseLine(prev, current, true);
+            pathString = pathString + " → " + path[i];
+            prev = current;
+        }
+        return pathString;
     };
 
     return Renderer;

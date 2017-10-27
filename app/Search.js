@@ -33,7 +33,7 @@ export default (function() {
         this.renderer.highlightCity(current);
 
         if(current.name == this.destCity) {
-            this.path = this.tracePath(this.startCity, this.cities[this.destCity], []);
+            this.path = this.tracePath(this.startCity, this.cities[this.destCity], []).reverse();
             this.status = "done";
             return this.status;
         }

@@ -72,16 +72,7 @@ $(document).ready(function() {
             cities[excludes[i]].isExcluded = true;
         }
 
-        $.each(cities, function (name, c) {
-            renderer.drawCity(c);
-            $.each(c.adjacent, function (i) {
-                    var adj = cities[c.adjacent[i]];
-                    if (adj.isExcluded === false) {
-                        renderer.drawLine(c, adj);
-                    }
-                }
-            );
-        });
+        renderer.drawCities(cities);
 
         search = new Search(
             cities,
@@ -95,22 +86,17 @@ $(document).ready(function() {
     function checkSearchStatus(status) {
         if (status === "done") {
             var path = search.path;
-            var pathString = path.reverse().shift();
-            var prev = cities[pathString];
-            for (var i = 0; i < path.length; i++) {
-                var current = cities[path[i]];
-                renderer.drawLine(prev, current, true);
-                pathString = pathString + " → " + path[i];
-                prev = current;
-            }
+            var pathString = renderer.drawPath(path, cities);
 
             $("#output").html(pathString);
             $("#searchStep").addClass("disabled");
             $("#search").addClass("disabled");
+            $("#reset").removeClass("disabled");
         } else if (status === "error") {
             $("#output").html("No Path Found.");
             $("#searchStep").addClass("disabled");
             $("#search").addClass("disabled");
+            $("#reset").removeClass("disabled");
         }
     }
 
@@ -134,11 +120,30 @@ $(document).ready(function() {
         checkSearchStatus(status);
     });
 
+    /* Reset locations, search, and visualization. */
+    $("#reset").on("click", function() {
+        const locationsFile = $("#locations")[0].files[0];
+        search = null;
+
+        console.log("Locations file: " + locationsFile.name);
+        (new Parser(locationsFile)).addLocations(cities);
+
+        $.each($("#exclude option:selected"), function() {
+            $(this).removeClass('active');
+        });
+
+        renderer.redrawCities(cities);
+
+        $("#searchStep").removeClass("disabled");
+        $("#search").removeClass("disabled");
+        $("#reset").addClass("disabled");
+
+    });
 
     /* Update the start/end/exclude dropdowns */
     $('select').on('contentChanged', function() {
-      // re-initialize (update)
-      $(this).material_select();
+        // re-initialize (update)
+        $(this).material_select();
     });
 
 });
