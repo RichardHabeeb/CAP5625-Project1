@@ -48,6 +48,7 @@ export default (function() {
             var newDist = current.d + this.heuristic.distBetween(current, next);
             if(newDist >= next.d) continue;
 
+            this.renderer.animateCity(next);
             this.renderer.animateLine(current, next);
 
             next.parent = current;

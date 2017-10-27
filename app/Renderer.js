@@ -40,7 +40,7 @@ export default (function() {
     };
 
     Renderer.prototype.animateCity = function (c) {
-        Snap.select("#"+next.name).attr({
+        Snap.select("#"+c.name).attr({
             fill: "#a6cee3",
             r: 1
         }).animate({r:15}, 1000);
