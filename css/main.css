@@ -122,7 +122,25 @@ textarea {
  */
 
 .hidden {
-    display: none !important;
+    display: none;
+}
+
+#svg {
+    display: block;
+    margin:auto;
+    border: 2px solid #ddd;
+}
+
+h1 {
+    font-weight:300;
+    font-style: italic;
+    letter-spacing: -5px;
+    font-size:150px;
+    text-align: center;
+}
+
+h3 {
+    text-align: center;
 }
 
 /*

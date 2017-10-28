@@ -19,10 +19,12 @@ export default (function() {
         this.renderer = renderer
     };
 
-    Search.prototype.shortestPathStep = function () {
+    Search.prototype.shortestPathStep = function (callback) {
+        var self = this;
+
         if (this.frontier.length == 0) {
             this.status = "error";
-            return this.status;
+            if(typeof(callback) === "function") callback(this.status);
         }
 
         var current = this.frontier.shift();
@@ -35,7 +37,15 @@ export default (function() {
         if(current.name == this.destCity) {
             this.path = this.tracePath(this.startCity, this.cities[this.destCity], []).reverse();
             this.status = "done";
-            return this.status;
+            if(typeof(callback) === "function") callback(this.status);
+        }
+
+        var numAnimationsComplete = 0;
+        var numAnimationsTarget = 0;
+        var checkAnimationStatus = function() {
+            if(++numAnimationsComplete >= numAnimationsTarget) {
+                if(typeof(callback) === "function") callback(self.status);
+            }
         }
 
         for(var i=0; i<current.adjacent.length; i++)
@@ -48,8 +58,10 @@ export default (function() {
             var newDist = current.d + this.heuristic.distBetween(current, next);
             if(newDist >= next.d) continue;
 
-            this.renderer.animateCity(next);
-            this.renderer.animateLine(current, next);
+            numAnimationsTarget += 2;
+
+            this.renderer.animateLine(current, next, checkAnimationStatus);
+            self.renderer.highlightCity(next, "#ff7f00", checkAnimationStatus);
 
             next.parent = current;
             next.d = newDist;
@@ -64,15 +76,21 @@ export default (function() {
         }
 
         // Color current node Done.
-        this.renderer.highlightCity(current, "#ff7f00");
-
-        return this.status;
+        numAnimationsTarget += 1;
+        this.renderer.highlightCity(current, "#386cb0", checkAnimationStatus);
     };
 
-    Search.prototype.shortestPath = function() {
-       var status = this.shortestPathStep();
-       if (status === "done" || status === "error") return status;
-       return this.shortestPath()
+    Search.prototype.shortestPath = function(callback) {
+        var self = this;
+        var loop = function(status) {
+            if (status === "done" || status === "error") {
+                if(typeof(callback) === "function") callback(status);
+            } else {
+                self.shortestPathStep(loop);
+            }
+
+        }
+        this.shortestPathStep(loop);
     };
 
     /* Trace the discovered path backwards recursively */

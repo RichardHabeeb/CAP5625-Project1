@@ -45,6 +45,7 @@ $(document).ready(function() {
             $("#search").removeClass("disabled");
             $("#searchStep").removeClass("disabled");
             $("#editMode").removeClass("disabled");
+            $("#reset").removeClass("disabled");
 
             $.each(cities, function(name, c)
             {
@@ -57,6 +58,8 @@ $(document).ready(function() {
             });
 
             renderer.drawCities(cities);
+
+
 
         });
     });
@@ -88,14 +91,13 @@ $(document).ready(function() {
             var pathString = renderer.drawPath(path, cities);
 
             $("#output").html(pathString);
+            $("#output").slideDown();
             $("#searchStep").addClass("disabled");
             $("#search").addClass("disabled");
-            $("#reset").removeClass("disabled");
         } else if (status === "error") {
             $("#output").html("No Path Found.");
             $("#searchStep").addClass("disabled");
             $("#search").addClass("disabled");
-            $("#reset").removeClass("disabled");
         }
     }
 
@@ -105,9 +107,9 @@ $(document).ready(function() {
         }
 
         $("#editMode").addClass("disabled");
-        var status = search.shortestPathStep();
-
-        checkSearchStatus(status);
+        search.shortestPathStep(function(status) {
+            checkSearchStatus(status);
+        });
     });
 
     $("#search").on("click", function() {
@@ -116,26 +118,23 @@ $(document).ready(function() {
         }
 
         $("#editMode").addClass("disabled");
-        var status = search.shortestPath();
-
-        checkSearchStatus(status);
+        search.shortestPath(function(status) {
+            checkSearchStatus(status);
+        });
     });
 
     /* Reset locations, search, and visualization. */
     $("#reset").on("click", function() {
         const locationsFile = $("#locations")[0].files[0];
         search = null;
-
-        console.log("Locations file: " + locationsFile.name);
         (new Parser(locationsFile)).addLocations(cities, function() {
-            console.log("Reset cities");
-            console.log(cities);
-            renderer.redrawCities(cities);
+            renderer.clear(function() {
+                renderer.drawCities(cities);
 
-            $("#searchStep").removeClass("disabled");
-            $("#search").removeClass("disabled");
-            $("#editMode").removeClass("disabled");
-            $("#reset").addClass("disabled");
+                $("#searchStep").removeClass("disabled");
+                $("#search").removeClass("disabled");
+                $("#editMode").removeClass("disabled");
+            });
         });
     });
 
@@ -152,10 +151,10 @@ $(document).ready(function() {
     $("#editMode").on("click", function() {
         if (isEdit) {
             $(this).html("Enter Edit Mode").removeClass("red").addClass("blue");
-            $("#editForm").addClass("hidden");
-            $("#search").removeClass("hidden");
-            $("#searchStep").removeClass("hidden");
-            $("#reset").removeClass("hidden");
+            $("#editForm").slideToggle();
+            $("#search").fadeToggle();
+            $("#searchStep").fadeToggle();
+            $("#reset").fadeToggle();
 
             var excludes = $("#exclude").val();
 
@@ -167,14 +166,24 @@ $(document).ready(function() {
             isEdit = false;
         } else {
             $(this).html("Exit Edit Mode").removeClass("blue").addClass("red");
-            $("#editForm").removeClass("hidden");
-            $("#search").addClass("hidden");
-            $("#searchStep").addClass("hidden");
-            $("#reset").addClass("hidden");
+            $("#editForm").slideToggle();
+            $("#search").fadeToggle();
+            $("#searchStep").fadeToggle();
+            $("#reset").fadeToggle();
 
             isEdit = true;
         }
     });
+
+    renderer.onClickCity = function () {
+        $('#edit').removeClass("hidden");
+        $('#editInfo').addClass("hidden");
+
+        var nodeInfo = Snap.select("#"+this.node.id).select("circle:nth-child(1)").getBBox();
+        $('#xcoord').val(nodeInfo.cx);
+        $('#ycoord').val(nodeInfo.cy);
+        $('#city').val(this.node.id);
+    };
 
     /* Update the start/end/exclude dropdowns */
     $('select').on('contentChanged', function() {
