@@ -125,7 +125,7 @@ $(document).ready(function() {
         $("#editMode").addClass("disabled");
 
         return true;
-    };
+    }
 
     /**
      * checkSearchStatus -
@@ -149,7 +149,7 @@ $(document).ready(function() {
             $("#searchStep").addClass("disabled");
             $("#search").addClass("disabled");
         }
-    };
+    }
 
     /**
      * On searchStep click.
@@ -239,6 +239,10 @@ $(document).ready(function() {
             $("#searchStep").fadeToggle();
             $("#reset").fadeToggle();
 
+            $.each(cities, function (name, c) {
+                c.isExcluded = false;
+            });
+
             var excludes = $("#exclude").val();
 
             for (var i = 0; i < excludes.length; i++) {
@@ -268,7 +272,7 @@ $(document).ready(function() {
     var updateCityForm = function(name) {
         $('#xcoord').val(cities[name].coords.x);
         $('#ycoord').val(cities[name].coords.y);
-    }
+    };
 
     /**
      * renderer.onClickCity -

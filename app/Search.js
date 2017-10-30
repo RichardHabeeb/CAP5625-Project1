@@ -1,7 +1,6 @@
 /*------------------------------------------------------------------------------
                                 IMPORTS
 ------------------------------------------------------------------------------*/
-import Point from './Point.js';
 
 /*------------------------------------------------------------------------------
                                 EXPORTS
@@ -72,7 +71,7 @@ export default (function() {
             if(++numAnimationsComplete >= numAnimationsTarget) {
                 if(typeof(callback) === "function") callback(self.status);
             }
-        }
+        };
 
         /* Iterate through adjacent verticies */
         for(var i=0; i<current.adjacent.length; i++)
@@ -124,8 +123,7 @@ export default (function() {
             } else {
                 self.shortestPathStep(loop);
             }
-
-        }
+        };
         this.shortestPathStep(loop);
     };
 

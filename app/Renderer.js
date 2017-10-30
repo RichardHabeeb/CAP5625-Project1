@@ -1,8 +1,20 @@
+/*------------------------------------------------------------------------------
+                                IMPORTS
+------------------------------------------------------------------------------*/
 import City from './City.js';
 import Point from './Point.js'
-
+/*------------------------------------------------------------------------------
+                                EXPORTS
+------------------------------------------------------------------------------*/
 export default (function() {
 
+    /**
+     * Renderer -
+     * A utility class for drawing and animating cities and the links between them.
+     *
+     * @param snap the drawing surface created using Snap svg.
+     * @constructor
+     */
     var Renderer = function (snap) {
         this.snap = snap;
         this.g = this.snap.group();
@@ -10,13 +22,19 @@ export default (function() {
 
     Renderer.prototype.snap = null;
     Renderer.prototype.cityRadius = 15;
-    Renderer.prototype.isRendered = false;
     Renderer.prototype.onClickCity = function () {};
 
+    /**
+     * Renderer.prototype.drawCity -
+     * Draw and label a city c at it's coordinate location.
+     * Excluded city is given a different color.
+     * Also adds an onClick event on the city.
+     *
+     * @param {City} c the city to draw
+     */
     Renderer.prototype.drawCity = function(c) {
         var cir = this.snap.circle(c.coords.x, c.coords.y, this.cityRadius);
         cir.attr({
-            // id: c.name,
             fill: "#ccc",
             strokeWidth: 0, // CamelCase...
             "fill-opacity": 0.5, // or dash-separated names
@@ -24,15 +42,13 @@ export default (function() {
 
         if(c.isExcluded) {
             cir.attr({
-                fill: "#DE6461",
-                // filter: this.snap.filter(Snap.filter.blur(5, 5))
+                fill: "#DE6461"
             });
         }
 
         var text = this.snap.text(c.coords.x, c.coords.y+5, c.name);
         text.attr({
             "text-anchor": "middle",
-            //"fill": "#1b5e20"
             "fill": "#000",
 
         });
@@ -44,10 +60,27 @@ export default (function() {
         this.g.add(group);
     };
 
+    /**
+     * Renderer.prototype.highlightCity -
+     * Animate and change the fill of an existing city.
+     *
+     * @param {City} c an existing city to highlight
+     * @param {String} fill the new color to be set
+     * @param {Function} callback function to call when animation completes
+     */
     Renderer.prototype.highlightCity = function(c, fill="#386cb0", callback) {
         Snap.select("#"+c.name).select("circle:nth-child(1)").animate({"fill": fill}, 250, mina.linear, callback);
     };
 
+    /**
+     * Renderer.prototype.calculateBoundaryPoints -
+     * Calculate the coordinates for the edge of the circle representing the city,
+     * so that the line drawn between those cities do not overlap the circle.
+     *
+     * @param {City} c2 a city to connect
+     * @param {City} c1 a city to connect
+     * @returns {{p1, p2}} points representing the boundary of each city
+     */
     Renderer.prototype.calculateBoundaryPoints = function (c2, c1) {
         const theta1 = Math.atan2(c2.coords.y - c1.coords.y, c2.coords.x - c1.coords.x);
         const theta2 = Math.atan2(c1.coords.y - c2.coords.y, c1.coords.x - c2.coords.x);
@@ -58,6 +91,13 @@ export default (function() {
         return {p1, p2};
     };
 
+    /**
+     * Renderer.prototype.drawLine -
+     * Draw a line connecting two cities.
+     *
+     * @param {City} c1 a city to connect
+     * @param {City} c2 a city to connect
+     */
     Renderer.prototype.drawLine = function drawLine(c1, c2) {
         var lineId = [c1.name, c2.name].sort().join("");
         if (Snap.select("#"+lineId) !== null){
@@ -78,6 +118,14 @@ export default (function() {
         this.g.add(line);
     };
 
+    /**
+     * Renderer.prototype.animateLine -
+     * Animate the line connecting c1 and c2.
+     *
+     * @param {City} c1 start city
+     * @param {City} c2 end city
+     * @param {Function} callback function to call when the animation completes
+     */
     Renderer.prototype.animateLine = function (c1, c2, callback) {
         var {p1, p2} = this.calculateBoundaryPoints(c2, c1);
         var lineId = [c1.name, c2.name].sort().join("")+"_searched";
@@ -99,6 +147,12 @@ export default (function() {
         this.g.add(line);
     };
 
+    /**
+     * Renderer.prototype.drawCities -
+     * Draw all the cities
+     *
+     * @param {City []} cities a list of cities to draw
+     */
     Renderer.prototype.drawCities = function (cities) {
         for (const [name, c] of Object.entries(cities)) {
             this.drawCity(c);
@@ -107,9 +161,14 @@ export default (function() {
                 this.drawLine(c, adj);
             }
         }
-        this.isRendered = true;
     };
 
+    /**
+     * Renderer.prototype.clear -
+     * Clear the drawing surface.
+     *
+     * @param {Function} callback function to call once the drawing surface is cleared.
+     */
     Renderer.prototype.clear = function(callback) {
         var self = this;
         this.g.animate({"alpha": 0}, 500, mina.linear, function() {
@@ -117,21 +176,36 @@ export default (function() {
             self.g = self.snap.group();
             if(typeof(callback) === "function") callback();
         });
-    }
+    };
 
 
+    /**
+     * Renderer.prototype.emphasiseLine -
+     * Emphasise the line connecting c1 and c2
+     *
+     * @param {City} c1 start city
+     * @param {City} c2 end city
+     */
     Renderer.prototype.emphasiseLine = function (c1, c2) {
         var lineId = [c1.name, c2.name].sort().join("")+"_searched";
         Snap.select("#"+lineId).animate({stroke: "#1b5e20"}, 500);
     };
 
+    /**
+     * Renderer.prototype.drawPath -
+     * Highlight the cities and the links in the given path.
+     *
+     * @param {String []} path the path to highlight
+     * @param {City []} cities the list of all cities
+     * @returns {String} pathString a string representing the path
+     */
     Renderer.prototype.drawPath = function (path, cities) {
         var pathString = path.shift();
         var prev = cities[pathString];
         this.highlightCity(prev, "#4caf50");
         for (var i = 0; i < path.length; i++) {
             var current = cities[path[i]];
-            this.emphasiseLine(prev, current, true);
+            this.emphasiseLine(prev, current);
             this.highlightCity(current, "#4caf50");
             pathString = pathString + " → " + path[i];
             prev = current;
