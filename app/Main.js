@@ -149,8 +149,9 @@ $(document).ready(function() {
     });
 
     $("#editMode").on("click", function() {
-        if (isEdit) {
-            $(this).html("Enter Edit Mode").removeClass("red").addClass("blue");
+        if (isEdit === true) {
+            isEdit = false;
+            $("#editMode").html("Enter Edit Mode").removeClass("red").addClass("blue");
             $("#editForm").slideToggle();
             $("#search").fadeToggle();
             $("#searchStep").fadeToggle();
@@ -162,16 +163,13 @@ $(document).ready(function() {
                 cities[excludes[i]].isExcluded = true;
                 renderer.redrawCity(cities[excludes[i]], cities);
             }
-
-            isEdit = false;
         } else {
-            $(this).html("Exit Edit Mode").removeClass("blue").addClass("red");
+            isEdit = true;
+            $("#editMode").html("Exit Edit Mode").removeClass("blue").addClass("red");
             $("#editForm").slideToggle();
             $("#search").fadeToggle();
             $("#searchStep").fadeToggle();
             $("#reset").fadeToggle();
-
-            isEdit = true;
         }
     });
 
