@@ -170,7 +170,7 @@ $(document).ready(function() {
         var xcoord = $("#xcoord").val();
         var ycoord = $("#ycoord").val();
 
-        cities[city].setCoords(new Point(parseInt(xcoord), parseInt(ycoord)));
+        cities[city].coords = new Point(parseInt(xcoord), parseInt(ycoord));
 
         renderer.clear(function() {
             renderer.drawCities(cities);

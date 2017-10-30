@@ -1,4 +1,4 @@
-<diagram program="umletino" version="14.2"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>892</x><y>398</y><w>260</w><h>180</h></coordinates><panel_attributes>City
+<diagram program="umletino" version="14.2"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>872</x><y>498</y><w>260</w><h>180</h></coordinates><panel_attributes>City
 --
 +name: String
 +adjacent: City [ ]
@@ -9,30 +9,30 @@
 +isExcluded: Boolean
 --
 #City(name: String, adjacent: City [ ])
-#setCoords(x: Number, y: Number): undefined</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>522</x><y>268</y><w>340</w><h>100</h></coordinates><panel_attributes>Heuristic
+#setCoords(x: Number, y: Number): undefined</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>432</x><y>338</y><w>340</w><h>100</h></coordinates><panel_attributes>Heuristic
 --
 
 --
 #Heuristic()
 #distBetween(a: City, b: City): Number
-#underEstimateCost(current: City, dest: City): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>522</x><y>428</y><w>340</w><h>100</h></coordinates><panel_attributes>ShortestDistanceHeuristic
+#underEstimateCost(current: City, dest: City): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>432</x><y>578</y><w>340</w><h>100</h></coordinates><panel_attributes>ShortestDistanceHeuristic
 --
 
 --
 #ShortestDistanceHeuristic()
 #distBetween(a: City, b: City): Number
-#underEstimateCost(current: City, dest: City): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>692</x><y>358</y><w>30</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;70</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1182</x><y>398</y><w>170</w><h>100</h></coordinates><panel_attributes>Point
+#underEstimateCost(current: City, dest: City): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>602</x><y>428</y><w>30</w><h>170</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;150</additional_attributes></element><element><id>UMLClass</id><coordinates><x>762</x><y>808</y><w>170</w><h>100</h></coordinates><panel_attributes>Point
 --
 +x: Number
 +y: Number
 --
 #Point(x: Number, y: Number)
-#dist(p: Point): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>522</x><y>148</y><w>340</w><h>90</h></coordinates><panel_attributes>Parser
+#dist(p: Point): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>932</x><y>938</y><w>340</w><h>90</h></coordinates><panel_attributes>Parser
 --
 +file: String
 --
 #getCities(callback: function): undefined
-#addLocations(cities: City [ ], callback: function): undefined</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>892</x><y>148</y><w>350</w><h>220</h></coordinates><panel_attributes>Search
+#addLocations(cities: City [ ], callback: function): undefined</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1252</x><y>308</y><w>350</w><h>220</h></coordinates><panel_attributes>Search
 --
 +cities: City [ ]
 +heuristic: Heuristic
@@ -47,7 +47,7 @@
 #shortestPathStep(callback: function)
 #shortestPath(callback: function)
 #tracePath(startCityName: String, destCity: City, path: String [ ]): String [ ]
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>172</x><y>148</y><w>320</w><h>310</h></coordinates><panel_attributes>Renderer
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1272</x><y>598</y><w>320</w><h>310</h></coordinates><panel_attributes>Renderer
 --
 +snap: Snap
 +cityRadius: Number
@@ -68,4 +68,8 @@
 #onClickCity()
 #calculateBoundaryPoints(c2: City, c1: City): (Point, Point)
 #clear(callback: function)
-</panel_attributes><additional_attributes></additional_attributes></element></diagram>
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1420</x><y>520</y><w>30</w><h>100</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1120</x><y>400</y><w>150</w><h>200</h></coordinates><panel_attributes>lt=&lt;-
+m1=0..n</panel_attributes><additional_attributes>10;180;130;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1120</x><y>630</y><w>170</w><h>160</h></coordinates><panel_attributes>lt=&lt;-
+m1=0..n</panel_attributes><additional_attributes>10;10;150;140</additional_attributes></element><element><id>Relation</id><coordinates><x>760</x><y>620</y><w>130</w><h>30</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>110;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>760</x><y>390</y><w>130</w><h>220</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>110;200;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>760</x><y>620</y><w>100</w><h>210</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>80;190;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>920</x><y>850</y><w>200</w><h>110</h></coordinates><panel_attributes>lt=&lt;-
+m1=0..n</panel_attributes><additional_attributes>10;10;180;90</additional_attributes></element><element><id>Relation</id><coordinates><x>990</x><y>670</y><w>130</w><h>290</h></coordinates><panel_attributes>lt=&lt;-
+m1=0..n</panel_attributes><additional_attributes>10;10;110;270</additional_attributes></element><element><id>Relation</id><coordinates><x>760</x><y>360</y><w>510</w><h>70</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;10;490;50</additional_attributes></element><element><id>Relation</id><coordinates><x>880</x><y>670</y><w>70</w><h>160</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;140;50;10</additional_attributes></element></diagram>

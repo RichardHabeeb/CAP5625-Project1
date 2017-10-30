@@ -1,7 +1,18 @@
+/*------------------------------------------------------------------------------
+                                IMPORTS
+------------------------------------------------------------------------------*/
 import Point from './Point.js';
 
+/*------------------------------------------------------------------------------
+                                EXPORTS
+------------------------------------------------------------------------------*/
 export default (function() {
-
+    /**
+     * Represents a city
+     * @constructor
+     * @param {String} name
+     * @param {Number} adjacent
+     */
     var City = function(name, adjacent) {
         this.name = name;
         this.adjacent = adjacent;
@@ -13,10 +24,6 @@ export default (function() {
     City.prototype.d = Number.MAX_VALUE;
     City.prototype.coords = new Point(0, 0);
     City.prototype.isExcluded = false;
-
-    City.prototype.setCoords = function (p) {
-        this.coords = p
-    };
 
     return City;
 })();

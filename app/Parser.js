@@ -67,7 +67,7 @@ export default (function() {
                 var x = locs.shift();
                 var y = locs.shift();
 
-                cities[name].setCoords(new Point(parseInt(x), parseInt(y)));
+                cities[name].coords = new Point(parseInt(x), parseInt(y));
             }
 
             if(typeof callback === "function") {
