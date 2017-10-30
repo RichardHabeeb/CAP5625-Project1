@@ -1,4 +1,4 @@
-<diagram program="umletino" version="14.2"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>810</x><y>399</y><w>260</w><h>180</h></coordinates><panel_attributes>City
+<diagram program="umletino" version="14.2"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>892</x><y>398</y><w>260</w><h>180</h></coordinates><panel_attributes>City
 --
 +name: String
 +adjacent: City [ ]
@@ -9,35 +9,63 @@
 +isExcluded: Boolean
 --
 #City(name: String, adjacent: City [ ])
-#setCoords(x: Number, y: Number): undefined</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1280</x><y>469</y><w>310</w><h>100</h></coordinates><panel_attributes>Heuristic
+#setCoords(x: Number, y: Number): undefined</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>522</x><y>268</y><w>340</w><h>100</h></coordinates><panel_attributes>Heuristic
 --
 
 --
 #Heuristic()
 #distBetween(a: City, b: City): Number
-#underEstimateCost(current: City, dest: City): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1280</x><y>629</y><w>310</w><h>100</h></coordinates><panel_attributes>ShortestDistanceHeuristic
+#underEstimateCost(current: City, dest: City): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>522</x><y>428</y><w>340</w><h>100</h></coordinates><panel_attributes>ShortestDistanceHeuristic
 --
 
 --
 #ShortestDistanceHeuristic()
 #distBetween(a: City, b: City): Number
-#underEstimateCost(current: City, dest: City): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1420</x><y>559</y><w>30</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;70</additional_attributes></element><element><id>UMLClass</id><coordinates><x>850</x><y>639</y><w>170</w><h>100</h></coordinates><panel_attributes>Point
+#underEstimateCost(current: City, dest: City): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>692</x><y>358</y><w>30</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;70</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1182</x><y>398</y><w>170</w><h>100</h></coordinates><panel_attributes>Point
 --
 +x: Number
 +y: Number
 --
 #Point(x: Number, y: Number)
-#dist(p: Point): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>780</x><y>179</y><w>330</w><h>90</h></coordinates><panel_attributes>Parser
+#dist(p: Point): Number</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>522</x><y>148</y><w>340</w><h>90</h></coordinates><panel_attributes>Parser
 --
 +file: String
 --
 #getCities(callback: function): undefined
-#addLocations(cities: City [ ], callback: function): undefined</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>390</x><y>429</y><w>260</w><h>90</h></coordinates><panel_attributes>Renderer
+#addLocations(cities: City [ ], callback: function): undefined</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>892</x><y>148</y><w>350</w><h>220</h></coordinates><panel_attributes>Search
 --
++cities: City [ ]
++heuristic: Heuristic
++startCity: String
++destCity: String
++frontier: City [ ]
++done: City [ ]
++path: String [ ]
++status: String
++renderer: Renderer
+--
+#shortestPathStep(callback: function)
+#shortestPath(callback: function)
+#tracePath(startCityName: String, destCity: City, path: String [ ]): String [ ]
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>172</x><y>148</y><w>320</w><h>310</h></coordinates><panel_attributes>Renderer
+--
++snap: Snap
++cityRadius: Number
++isRendered: Boolean
+--
+#Renderer(snap: Snap)
 
---
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1260</x><y>269</y><w>260</w><h>90</h></coordinates><panel_attributes>Search
---
+#drawCity(c: City)
+#highlightCity(c: City, fill: String, callback: function)
+#drawCities(cities: City [ ])
 
---
+#drawLine(c1: City, c2: City)
+#animateLine(c1: City, c2: City, callback: function)
+#emphasiseLine(c1: City, c2: City)
+
+#drawPath(path: String [ ], cities: City [ ]): String
+
+#onClickCity()
+#calculateBoundaryPoints(c2: City, c1: City): (Point, Point)
+#clear(callback: function)
 </panel_attributes><additional_attributes></additional_attributes></element></diagram>
