@@ -1,6 +1,6 @@
 # Introduction to AI: Project 1
 
-This is the official repository of Richard Habeeb's and Anwesh Tuladhar's CAP5625 Project1 submission. We use A\* to path find through a network of cities using different hueristic algorithms.
+This is the official repository of Richard Habeeb's and Anwesh Tuladhar's CAP5625 Project1 submission. We use A\* to path find through a network of cities using different heuristic algorithms.
 
 
 *Submission note: We have provided the source code and build artifacts already in the submission zip. Open index.html to run.*
@@ -42,7 +42,3 @@ rm -rf dest && broccoli build dest
 ```
 
 Then open index.html in your browser (warning: backwards compatibility with older browsers currently not supported).
-
-## Visual Path Representation
-
-Still under construction.
