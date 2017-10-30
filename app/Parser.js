@@ -1,15 +1,32 @@
+/*------------------------------------------------------------------------------
+                                IMPORTS
+------------------------------------------------------------------------------*/
 import City from './City.js';
 import Point from './Point.js'
-
+/*------------------------------------------------------------------------------
+                                EXPORTS
+------------------------------------------------------------------------------*/
 export default (function() {
 
+    /**
+     * Parser -
+     * A parser for both connections and locations files.
+     *
+     * @param file the file to be parsed
+     * @constructor
+     */
     var Parser = function(file) {
         this.file = file;
     };
 
     Parser.prototype.file = null;
 
-    /* Parse the connections file */
+    /**
+     * Parser.prototype.getCities -
+     * Parse the connections file and initialize each city.
+     *
+     * @param {function} callback function to call when the entire file is parsed.
+     */
     Parser.prototype.getCities = function(callback) {
         var reader = new FileReader();
         var cities = {};
@@ -30,7 +47,7 @@ export default (function() {
                 });
                 if(adjacents[adjacents.length-1]=="") adjacents.pop();
                 var name = adjacents.shift();
-                var num_adjacent = adjacents.shift();
+                var num_adjacent = adjacents.shift();  // remove the number of adjacent cities.
 
                 cities[name] = new City(name, adjacents);
             }
@@ -43,8 +60,13 @@ export default (function() {
         reader.readAsText(this.file);
     };
 
-
-    /* Parse the locations file */
+    /**
+     * Parser.prototype.addLocations -
+     * Parse the locations file and update the location of each city.
+     *
+     * @param {City []} cities the list of cities from the connections file.
+     * @param callback function to call when the entire file is parsed.
+     */
     Parser.prototype.addLocations = function(cities, callback) {
         var reader = new FileReader();
 
