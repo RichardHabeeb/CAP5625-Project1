@@ -32,8 +32,7 @@ export default (function() {
         this.done[current.name] = current;
         this.status = "searching";
 
-        // Color current node.
-        this.renderer.highlightCity(current);
+
 
         if(current.name == this.destCity) {
             this.path = this.tracePath(this.startCity, this.cities[this.destCity], []).reverse();
@@ -50,6 +49,10 @@ export default (function() {
             }
         }
 
+        // Color current node.
+        numAnimationsTarget++;
+        this.renderer.highlightCity(current, "#386cb0", checkAnimationStatus);
+
         for(var i=0; i<current.adjacent.length; i++)
         {
             var next = this.cities[current.adjacent[i]];
@@ -61,7 +64,6 @@ export default (function() {
             if(newDist >= next.d) continue;
 
             numAnimationsTarget += 2;
-
             this.renderer.animateLine(current, next, checkAnimationStatus);
             self.renderer.highlightCity(next, "#ff7f00", checkAnimationStatus);
 

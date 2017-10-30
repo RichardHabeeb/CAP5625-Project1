@@ -83,7 +83,6 @@ $(document).ready(function() {
         $.each(cities, function (name, c) {
             c.d = City.prototype.d;
             c.h = City.prototype.h;
-            c.isExcluded = false;
         });
 
         search = new Search(
@@ -155,7 +154,7 @@ $(document).ready(function() {
                 $("#searchStep").removeClass("disabled");
                 $("#search").removeClass("disabled");
                 $("#editMode").removeClass("disabled");
-                
+
                 $("#startCity").removeAttr("disabled");
                 $("#endCity").removeAttr("disabled");
                 $("#heuristic").removeAttr("disabled");
@@ -191,8 +190,12 @@ $(document).ready(function() {
 
             for (var i = 0; i < excludes.length; i++) {
                 cities[excludes[i]].isExcluded = true;
-                renderer.redrawCity(cities[excludes[i]], cities);
             }
+
+            renderer.clear(function() {
+                renderer.drawCities(cities);
+            });
+
         } else {
             isEdit = true;
             $("#editMode").html("Exit Edit Mode").removeClass("blue").addClass("red");
@@ -204,9 +207,8 @@ $(document).ready(function() {
     });
 
     var updateCityForm = function(name) {
-        var nodeInfo = Snap.select("#"+name).select("circle:nth-child(1)").getBBox();
-        $('#xcoord').val(nodeInfo.cx);
-        $('#ycoord').val(nodeInfo.cy);
+        $('#xcoord').val(cities[name].coords.x);
+        $('#ycoord').val(cities[name].coords.y);
     }
 
     renderer.onClickCity = function () {

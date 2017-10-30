@@ -24,8 +24,8 @@ export default (function() {
 
         if(c.isExcluded) {
             cir.attr({
-                fill: "#ffff99",
-                filter: this.snap.filter(Snap.filter.blur(5, 5))
+                fill: "#DE6461",
+                // filter: this.snap.filter(Snap.filter.blur(5, 5))
             });
         }
 
