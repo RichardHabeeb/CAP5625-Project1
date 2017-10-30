@@ -142,6 +142,7 @@ $(document).ready(function() {
             $("#output").slideDown();
             $("#searchStep").addClass("disabled");
             $("#search").addClass("disabled");
+            $("#reset").removeClass("disabled");
         } else if (status === "error") {
             $("#output").html("No Path Found.");
             $("#output").slideDown();
