@@ -25,6 +25,7 @@ export default (function() {
         if (this.frontier.length == 0) {
             this.status = "error";
             if(typeof(callback) === "function") callback(this.status);
+            return;
         }
 
         var current = this.frontier.shift();
@@ -38,6 +39,7 @@ export default (function() {
             this.path = this.tracePath(this.startCity, this.cities[this.destCity], []).reverse();
             this.status = "done";
             if(typeof(callback) === "function") callback(this.status);
+            return;
         }
 
         var numAnimationsComplete = 0;

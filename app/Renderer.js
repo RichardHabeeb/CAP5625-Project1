@@ -38,6 +38,7 @@ export default (function() {
         });
 
         var group = this.snap.group(cir, text).attr({id: c.name, opacity: 0.0});
+        group.addClass("cityNode");
         group.animate({'opacity': 1.0}, 1000);
         group.click(this.onClickCity);
         this.g.add(group);

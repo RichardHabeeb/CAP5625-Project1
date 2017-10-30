@@ -52,8 +52,10 @@ $(document).ready(function() {
                 $("#startCity").append('<option value=' + name + '>' + name + '</option>');
                 $("#endCity").append('<option value=' + name + '>' + name + '</option>');
                 $("#exclude").append('<option value=' + name + '>' + name + '</option>');
+                $("#editCity").append('<option value=' + name + '>' + name + '</option>');
                 $("#startCity").trigger('contentChanged');
                 $("#endCity").trigger('contentChanged');
+                $("#editCity").trigger('contentChanged');
                 $("#exclude").trigger('contentChanged');
             });
 
@@ -65,6 +67,14 @@ $(document).ready(function() {
     });
 
     function setupSearch() {
+
+        if( typeof(cities[$("#startCity").find(":selected").text()]) === "undefined" ||
+            typeof(cities[$("#endCity").find(":selected").text()]) === "undefined")
+        {
+            return false;
+        }
+
+
         var h = new Heuristic();
         if ($("#heuristic").find(":selected").val() == "straight") {
             h = new ShortestDistanceHeuristic();
@@ -83,6 +93,17 @@ $(document).ready(function() {
             $("#endCity").find(":selected").text(),
             renderer
         );
+
+        $("#startCity").prop( "disabled", true );
+        $("#endCity").prop( "disabled", true );
+        $("#heuristic").prop( "disabled", true );
+        $("#startCity").trigger('contentChanged');
+        $("#endCity").trigger('contentChanged');
+        $("#heuristic").trigger('contentChanged');
+
+        $("#editMode").addClass("disabled");
+
+        return true;
     }
 
     function checkSearchStatus(status) {
@@ -103,10 +124,10 @@ $(document).ready(function() {
 
     $("#searchStep").on("click", function() {
         if (search === null) {
-            setupSearch();
+            if(!setupSearch()) return; //Check for valid params.
         }
 
-        $("#editMode").addClass("disabled");
+
         search.shortestPathStep(function(status) {
             checkSearchStatus(status);
         });
@@ -114,7 +135,7 @@ $(document).ready(function() {
 
     $("#search").on("click", function() {
         if (search === null) {
-            setupSearch();
+            if(!setupSearch()) return; //Check for valid params.
         }
 
         $("#editMode").addClass("disabled");
@@ -134,18 +155,27 @@ $(document).ready(function() {
                 $("#searchStep").removeClass("disabled");
                 $("#search").removeClass("disabled");
                 $("#editMode").removeClass("disabled");
+                
+                $("#startCity").removeAttr("disabled");
+                $("#endCity").removeAttr("disabled");
+                $("#heuristic").removeAttr("disabled");
+                $("#startCity").trigger('contentChanged');
+                $("#endCity").trigger('contentChanged');
+                $("#heuristic").trigger('contentChanged');
             });
         });
     });
 
     $("#update").on("click", function() {
-        var city = $("#city").val();
+        var city = $("#editCity").find(":selected").text();
         var xcoord = $("#xcoord").val();
         var ycoord = $("#ycoord").val();
 
         cities[city].setCoords(new Point(parseInt(xcoord), parseInt(ycoord)));
 
-        renderer.redrawCity(cities[city], cities);
+        renderer.clear(function() {
+            renderer.drawCities(cities);
+        });
     });
 
     $("#editMode").on("click", function() {
@@ -173,14 +203,16 @@ $(document).ready(function() {
         }
     });
 
-    renderer.onClickCity = function () {
-        $('#edit').removeClass("hidden");
-        $('#editInfo').addClass("hidden");
-
-        var nodeInfo = Snap.select("#"+this.node.id).select("circle:nth-child(1)").getBBox();
+    var updateCityForm = function(name) {
+        var nodeInfo = Snap.select("#"+name).select("circle:nth-child(1)").getBBox();
         $('#xcoord').val(nodeInfo.cx);
         $('#ycoord').val(nodeInfo.cy);
-        $('#city').val(this.node.id);
+    }
+
+    renderer.onClickCity = function () {
+        $("#editCity").val(this.node.id);
+        $("#editCity").trigger('contentChanged');
+        $("#editCity").trigger('change');
     };
 
     /* Update the start/end/exclude dropdowns */
@@ -188,5 +220,9 @@ $(document).ready(function() {
         // re-initialize (update)
         $(this).material_select();
     });
+
+    $("#editCity").on("change", function() {
+        updateCityForm($("#editCity").find(":selected").text());
+    })
 
 });
